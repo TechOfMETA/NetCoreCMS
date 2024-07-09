@@ -14,23 +14,32 @@ using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Threading.Tasks;
+using System.Threading;
+using Microsoft.EntityFrameworkCore;
+//using Microsoft.EntityFrameworkCore.Extensions.Internal;
+using System.Linq;
 
 namespace NetCoreCMS.Framework.Core.Auth
 {
-    public class NccRoleStore : RoleStore<NccRole, NccDbContext, long, NccUserRole, IdentityRoleClaim<long>>
+    public class NccRoleStore : RoleStore<NccRole, NccDbContext, long, NccUserRole, NccRoleClaim>
     {
         public NccRoleStore(NccDbContext context) : base(context)
         {
         }
-
-        protected override IdentityRoleClaim<long> CreateRoleClaim(NccRole role, Claim claim)
+        protected override NccRoleClaim CreateRoleClaim(NccRole role, Claim claim)
         {
-            return new IdentityRoleClaim<long> { RoleId = role.Id, ClaimType = claim.Type, ClaimValue = claim.Value };
+            return new NccRoleClaim { RoleId = role.Id, ClaimType = claim.Type, ClaimValue = claim.Value };
         }
-
-        internal object FindByNameAsync(object reader)
+        public override async Task<NccRole> FindByNameAsync(string normalizedName, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+            ThrowIfDisposed();
+            return await Roles.FirstOrDefaultAsync(r => r.NormalizedName == normalizedName, cancellationToken);
         }
+        //internal object FindByNameAsync(object reader)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

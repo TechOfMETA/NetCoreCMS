@@ -73,7 +73,7 @@
     }
   ],
   "Settings": {
-    "version": 2.0000000000000009,
-    "style": "light.css"
+    "style": "light.css",
+    "version": 2.000000000000001
   }
 }

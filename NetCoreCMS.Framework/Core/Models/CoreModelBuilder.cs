@@ -54,70 +54,89 @@ namespace NetCoreCMS.Framework.Core.Models
             var NccWebSiteWidget = GlobalContext.GetTableName<NccWebSiteWidget>();
             var NccWidget = GlobalContext.GetTableName<NccWidget>();
             var NccWidgetSection = GlobalContext.GetTableName<NccWidgetSection>();
-            var IdentityUserClaim = GlobalContext.GetTableName<IdentityUserClaim<long>>();
-            var IdentityRoleClaim = GlobalContext.GetTableName<IdentityRoleClaim<long>>();
-            var IdentityUserLogin = GlobalContext.GetTableName<IdentityUserLogin<long>>();
-            var IdentityUserToken = GlobalContext.GetTableName<IdentityUserToken<long>>();
+            var IdentityUserClaim = GlobalContext.GetTableName<NccUserClaim>();
+            var IdentityRoleClaim = GlobalContext.GetTableName<NccRoleClaim>();
+            var IdentityUserLogin = GlobalContext.GetTableName<NccUserLogin>();
+            var IdentityUserToken = GlobalContext.GetTableName<NccUserToken>();
 
-
-            modelBuilder.Entity<NccModule>(b => {
+            modelBuilder.Entity<NccModule>(b =>
+            {
                 b.ToTable(NccModule);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.HasMany(x => x.Dependencies);
             });
 
-            modelBuilder.Entity<NccModuleDependency>(b => {
+            modelBuilder.Entity<NccModuleDependency>(b =>
+            {
                 b.ToTable(NccModuleDependency);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.HasOne(x => x.NccModule);
             });
 
-            modelBuilder.Entity<NccMenu>(b => {
+            modelBuilder.Entity<NccMenu>(b =>
+            {
                 b.ToTable(NccMenu);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.HasMany(ur => ur.MenuItems);
             });
 
-            modelBuilder.Entity<NccMenuItem>(b => {
+            modelBuilder.Entity<NccMenuItem>(b =>
+            {
                 b.ToTable(NccMenuItem);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
-                b.HasOne( m => m.Parent );
-                b.HasMany( m => m.SubActions );
+                b.HasOne(m => m.Parent);
+                b.HasMany(m => m.SubActions);
                 b.HasMany(m => m.Childrens);
             });
-            
-            modelBuilder.Entity<NccPage>(b => {
+
+            modelBuilder.Entity<NccPage>(b =>
+            {
                 b.ToTable(NccPage);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.HasOne(p => p.Parent);
             });
 
-            modelBuilder.Entity<NccPageHistory>(b => {
+            modelBuilder.Entity<NccPageHistory>(b =>
+            {
                 b.ToTable(NccPageHistory);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.HasOne(p => p.Parent);
                 b.HasMany(p => p.PageDetailsHistory);
             });
 
-            modelBuilder.Entity<NccPageDetails>(b => {
+            modelBuilder.Entity<NccPageDetails>(b =>
+            {
                 b.ToTable(NccPageDetails);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.HasOne(p => p.Page);
             });
 
-            modelBuilder.Entity<NccPageDetailsHistory>(b => {
+            modelBuilder.Entity<NccPageDetailsHistory>(b =>
+            {
                 b.ToTable(NccPageDetailsHistory);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.HasOne(p => p.PageHistory);
             });
 
-            modelBuilder.Entity<NccPlugins>(b => {
+            modelBuilder.Entity<NccPlugins>(b =>
+            {
                 b.ToTable(NccPlugins);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.HasMany(p => p.Widgets);
             });
 
-            modelBuilder.Entity<NccPost>(b => {
+            modelBuilder.Entity<NccPost>(b =>
+            {
 
                 b.ToTable(NccPost);
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
@@ -127,11 +146,13 @@ namespace NetCoreCMS.Framework.Core.Models
                 b.HasMany(p => p.PostDetails);
                 b.HasMany(p => p.Categories);
                 b.HasMany(p => p.Comments);
-                b.HasMany(p => p.Tags);                
+                b.HasMany(p => p.Tags);
             });
-            
-            modelBuilder.Entity<NccCategory>(b => {
+
+            modelBuilder.Entity<NccCategory>(b =>
+            {
                 b.ToTable(NccCategory);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.HasOne(p => p.Parent);
                 b.HasMany(p => p.CategoryDetails);
@@ -153,20 +174,24 @@ namespace NetCoreCMS.Framework.Core.Models
             modelBuilder.Entity<NccPostCategory>()
                 .HasOne(pt => pt.Category)
                 .WithMany(t => t.Posts)
-                .HasForeignKey(pt => pt.CategoryId); 
+                .HasForeignKey(pt => pt.CategoryId);
 
             #endregion
 
 
-            modelBuilder.Entity<NccComment>(b => {
+            modelBuilder.Entity<NccComment>(b =>
+            {
                 b.ToTable(NccComment);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.HasOne(p => p.Post);
                 b.HasOne(p => p.Author);
             });
 
-            modelBuilder.Entity<NccTag>(b => {
+            modelBuilder.Entity<NccTag>(b =>
+            {
                 b.ToTable(NccTag);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.HasMany(p => p.Posts);
             });
@@ -190,14 +215,18 @@ namespace NetCoreCMS.Framework.Core.Models
 
             #endregion
 
-            modelBuilder.Entity<NccCategoryDetails>(b => {
+            modelBuilder.Entity<NccCategoryDetails>(b =>
+            {
                 b.ToTable(NccCategoryDetails);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.HasOne(p => p.Category);
             });
-            
-            modelBuilder.Entity<NccPostDetails>(b => {
+
+            modelBuilder.Entity<NccPostDetails>(b =>
+            {
                 b.ToTable(NccPostDetails);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.HasOne(p => p.Post);
             });
@@ -205,24 +234,39 @@ namespace NetCoreCMS.Framework.Core.Models
             modelBuilder.Entity<NccRole>(b =>
             {
                 b.HasMany(ur => ur.Users);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.ToTable(NccRole);
             });
 
-            modelBuilder.Entity<NccSettings>().ToTable(NccSettings).Property(x=>x.VersionNumber).IsConcurrencyToken();
+            modelBuilder.Entity<NccSettings>(b =>
+            {
+                b.ToTable(NccSettings);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
+                b.Property(x => x.VersionNumber).IsConcurrencyToken();
+            });
 
-            modelBuilder.Entity<NccScheduleTaskHistory>().ToTable(NccScheduleTaskHistory).Property(x=>x.VersionNumber).IsConcurrencyToken();
 
-            modelBuilder.Entity<NccStartup>(b => {
+            modelBuilder.Entity<NccScheduleTaskHistory>(b =>
+            {
+                b.ToTable(NccScheduleTaskHistory);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
+                b.Property(x => x.VersionNumber).IsConcurrencyToken();
+            });
+
+            modelBuilder.Entity<NccStartup>(b =>
+            {
                 b.ToTable(NccStartup);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 //b.HasOne(p => p.User);
-                b.HasOne(p => p.Permission);                
+                b.HasOne(p => p.Permission);
             });
-             
+
             modelBuilder.Entity<NccUser>(b =>
             {
                 b.ToTable(NccUser);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.HasMany(ur => ur.Roles);
                 b.HasMany(w => w.ExtraPermissions);
@@ -238,71 +282,96 @@ namespace NetCoreCMS.Framework.Core.Models
                 b.ToTable(NccUserRole);
             });
 
-            modelBuilder.Entity<NccWebSite>(b => {
+            modelBuilder.Entity<NccWebSite>(b =>
+            {
                 b.ToTable(NccWebSite);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.HasMany(w => w.WebSiteInfos);
                 b.Property(p => p.EnableCache).HasDefaultValue(false);
             });
 
-            modelBuilder.Entity<NccWebSiteInfo>().ToTable(NccWebSiteInfo).Property(x=>x.VersionNumber).IsConcurrencyToken();
-
-            modelBuilder.Entity<NccPermission>(b => {
-                b.ToTable(NccPermission);
+            modelBuilder.Entity<NccWebSiteInfo>(b =>
+            {
+                b.ToTable(NccWebSiteInfo);
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
-                b.HasMany( x=> x.Users );
+            });
+
+            modelBuilder.Entity<NccPermission>(b =>
+            {
+                b.ToTable(NccPermission);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
+                b.Property(x => x.VersionNumber).IsConcurrencyToken();
+                b.HasMany(x => x.Users);
                 b.HasMany(x => x.PermissionDetails);
             });
 
-            modelBuilder.Entity<NccPermissionDetails>(b => {
+            modelBuilder.Entity<NccPermissionDetails>(b =>
+            {
                 b.ToTable(NccPermissionDetails);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.Property(x => x.ExtraAllowUserId).IsRequired(false);
                 b.Property(x => x.ExtraDenyUserId).IsRequired(false);
                 b.Property(x => x.PermissionId).IsRequired(false);
 
-                b.HasOne(w => w.Permission).WithMany(u=>u.PermissionDetails).HasForeignKey(y=>y.PermissionId);
+                b.HasOne(w => w.Permission).WithMany(u => u.PermissionDetails).HasForeignKey(y => y.PermissionId);
                 b.HasOne(w => w.DenyUser).WithMany(x => x.ExtraDenies).HasForeignKey(y => y.ExtraDenyUserId);
-                b.HasOne(w => w.AllowUser).WithMany(x => x.ExtraPermissions).HasForeignKey(y => y.ExtraAllowUserId);                
+                b.HasOne(w => w.AllowUser).WithMany(x => x.ExtraPermissions).HasForeignKey(y => y.ExtraAllowUserId);
             });
 
-            modelBuilder.Entity<NccUserPermission>(b => {
+            modelBuilder.Entity<NccUserPermission>(b =>
+            {
                 b.HasKey(up => new { up.UserId, up.PermissionId });
                 b.ToTable(NccUserPermission);
-                b.HasOne(w => w.User).WithMany( u => u.Permissions ).HasForeignKey(x=>x.UserId);
-                b.HasOne(w => w.Permission).WithMany( u => u.Users ).HasForeignKey(x=>x.PermissionId);
+                b.HasOne(w => w.User).WithMany(u => u.Permissions).HasForeignKey(x => x.UserId);
+                b.HasOne(w => w.Permission).WithMany(u => u.Users).HasForeignKey(x => x.PermissionId);
             });
 
-            modelBuilder.Entity<NccWebSiteWidget>(b => {
+            modelBuilder.Entity<NccWebSiteWidget>(b =>
+            {
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
                 b.ToTable(NccWebSiteWidget);
                 b.HasOne(w => w.WebSite);
             });
 
-            modelBuilder.Entity<NccWidget>().ToTable(NccWidget).Property(x=>x.VersionNumber).IsConcurrencyToken();
-            modelBuilder.Entity<NccWidgetSection>(b => {
+            modelBuilder.Entity<NccWidget>(b =>
+            {
+                b.ToTable(NccWidget);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
+                b.Property(x => x.VersionNumber).IsConcurrencyToken();
+            });
+
+            modelBuilder.Entity<NccWidgetSection>(b =>
+            {
                 b.ToTable(NccWidgetSection);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.Property(x => x.VersionNumber).IsConcurrencyToken();
             });
 
             modelBuilder.Entity<IdentityUserClaim<long>>(b =>
             {
                 b.HasKey(uc => uc.Id);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.ToTable(IdentityUserClaim);
             });
             modelBuilder.Entity<IdentityRoleClaim<long>>(b =>
             {
                 b.HasKey(rc => rc.Id);
+                b.Property(x => x.Id).ValueGeneratedOnAdd();
                 b.ToTable(IdentityRoleClaim);
-            });            
+            });
             modelBuilder.Entity<IdentityUserLogin<long>>(b =>
             {
+                b.HasKey(x => new { x.UserId, x.ProviderKey });
                 b.ToTable(IdentityUserLogin);
             });
             modelBuilder.Entity<IdentityUserToken<long>>(b =>
             {
+                b.HasKey(x => new { x.UserId, x.LoginProvider });
                 b.ToTable(IdentityUserToken);
-            });            
+            });
         }
     }
 }

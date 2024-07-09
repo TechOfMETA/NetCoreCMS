@@ -44,7 +44,7 @@ namespace NetCoreCMS.Web
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .UseDefaultServiceProvider(options => options.ValidateScopes = false)
-                .UseApplicationInsights()
+                //.AddApplicationInsightsTelemetry()
                 .Build();
             return nccWebHost;
         }

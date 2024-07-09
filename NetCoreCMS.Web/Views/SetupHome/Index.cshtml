@@ -19,8 +19,8 @@
         <div class="col-sm-10">
             <select asp-for="Database" type="text" class="form-control" id="Database" name="Database">
                 <option value="">Select your database engine</option>
-                @*<option value="SqLite">SQLite</option>
-                <option value="MSSQL">MSSQL</option>*@
+                @*<option value="SqLite">SQLite</option>*@
+                <option value="MSSQL">MSSQL</option>
                 <option value="MySql">MySql</option>
                 @*<option value="MsSqlLocalStorage">MsSqlLocalStorage</option>
                 <option value="PgSql">PgSql</option>*@
@@ -40,7 +40,7 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="DatabasePort">Database Port:</label>
             <div class="col-sm-10">
-                <input asp-for="DatabasePort" type="text" class="form-control" id="DatabasePort" name="DatabasePort" placeholder="Enter Database Port" value="3306">
+                <input asp-for="DatabasePort" type="text" class="form-control" id="DatabasePort" name="DatabasePort" placeholder="Enter Database Port (Empty let default port)" value="">
                 <span asp-validation-for="DatabasePort" class="text-danger"></span>
             </div>
         </div>

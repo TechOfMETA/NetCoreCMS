@@ -7,7 +7,7 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
- 
+
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -19,7 +19,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
+//using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 
 using NetCoreCMS.Framework.Core.Events.Themes;
 using NetCoreCMS.Framework.Themes;
@@ -41,14 +41,16 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
 {
     public abstract class NccRazorPage<TModel> : RazorPage<TModel>
     {
-        public string Title {
+        public string Title
+        {
             get
             {
                 object val;
                 Context.Items.TryGetValue("NCC_RAZOR_PAGE_PROPERTY_TITLE", out val);
                 return (string)val ?? "";
             }
-            set {
+            set
+            {
                 Context.Items["NCC_RAZOR_PAGE_PROPERTY_TITLE"] = value;
             }
         }
@@ -117,7 +119,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 Context.Items["NCC_RAZOR_PAGE_PROPERTY_FAVICON"] = value;
             }
         }
-        public string CurrentLayout {
+        public string CurrentLayout
+        {
             get
             {
                 object val;
@@ -129,7 +132,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 Context.Items["NCC_RAZOR_PAGE_PROPERTY_CURRENT_LAYOUT"] = value;
             }
         }
-        public string CurrentLanguage {
+        public string CurrentLanguage
+        {
             get
             {
                 object val;
@@ -206,7 +210,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             }
         }
 
-        public bool HasLeftColumn {
+        public bool HasLeftColumn
+        {
             get
             {
                 object val;
@@ -231,7 +236,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 Context.Items["NCC_RAZOR_PAGE_PROPERTY_LEFT_COLUMN_WIDTH"] = value;
             }
         }
-        public bool HasRightColumn {
+        public bool HasRightColumn
+        {
             get
             {
                 object val;
@@ -256,7 +262,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 Context.Items["NCC_RAZOR_PAGE_PROPERTY_RIGHT_COLUMN_WIDTH"] = value;
             }
         }
-        public float BodyWidth {
+        public float BodyWidth
+        {
             get
             {
                 object val;
@@ -307,7 +314,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 Context.Items["NCC_RAZOR_PAGE_PROPERTY_META_DESCRIPTION"] = value;
             }
         }
-        public string MetaKeyword {
+        public string MetaKeyword
+        {
             get
             {
                 object val;
@@ -319,7 +327,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 Context.Items["NCC_RAZOR_PAGE_PROPERTY_META_KEYWORD"] = value;
             }
         }
-        public string MetaAuthor {
+        public string MetaAuthor
+        {
             get
             {
                 object val;
@@ -331,7 +340,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 Context.Items["NCC_RAZOR_PAGE_PROPERTY_META_AUTHOR"] = value;
             }
         }
-        public string MetaGenerator {
+        public string MetaGenerator
+        {
             get
             {
                 object val;
@@ -343,7 +353,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 Context.Items["NCC_RAZOR_PAGE_PROPERTY_META_GENERATOR"] = value;
             }
         }
-        public string MetaApplicationName {
+        public string MetaApplicationName
+        {
             get
             {
                 object val;
@@ -355,7 +366,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 Context.Items["NCC_RAZOR_PAGE_PROPERTY_META_APPLICATION_NAME"] = value;
             }
         }
-        public string Copyright {
+        public string Copyright
+        {
             get
             {
                 object val;
@@ -367,7 +379,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 Context.Items["NCC_RAZOR_PAGE_PROPERTY_COPY_RIGHT"] = value;
             }
         }
-        public string PoweredBy {
+        public string PoweredBy
+        {
             get
             {
                 object val;
@@ -394,7 +407,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             }
         }
 
-        public INccTranslator _T {
+        public INccTranslator _T
+        {
             get
             {
                 object val;
@@ -423,7 +437,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
 
         private IMediator _mediator;
         public INccAuthorizationHandler AuthorizationHandler { get; set; }
-        public Dictionary<string, object> PageProperty {
+        public Dictionary<string, object> PageProperty
+        {
             get
             {
                 object val;
@@ -440,7 +455,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 Context.Items["NCC_RAZOR_PAGE_PROPERTY_DICTIONARY"] = value;
             }
         }
-        
+
         private List<Widget> _moduleWidgets = new List<Widget>();
 
         public void SetProperty(string key, object value)
@@ -469,7 +484,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 return null;
             }
         }
-        
+
         private ThemeSection[] FireEvent(string name, string viewFile, string content, TModel model)
         {
             var themeSections = new ThemeSection[] { };
@@ -481,7 +496,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 Model = Model,
                 ViewFileName = viewFile,
                 Language = CurrentLanguage,
-                ViewBag  = ViewBag,
+                ViewBag = ViewBag,
                 ViewContext = ViewContext,
                 HttpContext = Context,
                 TempData = TempData,
@@ -510,7 +525,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string RenderToStringAsync(string viewName, object model)
         {
             var viewContent = "";
-           
+
             try
             {
                 var ac = new ActionContext(Context, ViewContext.RouteData, ViewContext.ActionDescriptor);
@@ -535,9 +550,9 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                     );
                     viewContext.RouteData = ViewContext.RouteData;
                     viewResult.View.RenderAsync(viewContext).Wait();
-                    viewContent = sw.GetStringBuilder().ToString();        
+                    viewContent = sw.GetStringBuilder().ToString();
                     //For showing which view file finally used for rendering.
-                    viewContent += $"<!-- View: {viewResult.View.Path}-->";                    
+                    viewContent += $"<!-- View: {viewResult.View.Path}-->";
                 }
             }
             catch (Exception ex)
@@ -546,14 +561,16 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 _Logger.LogError(ex.Message, ex);
                 if (GlobalContext.HostingEnvironment.EnvironmentName.Contains("Development"))
                 {
-                    viewContent = $"<p style='color:red;'> {ex.Message}</p>"; ;
+                    viewContent = $"<p style='color:red;'> {ex.Message}</p>";
+                    ;
                 }
                 else
                 {
-                    viewContent = $"<p style='color:red;'> Error in view rendering, file name is {viewName}</p>"; ;
+                    viewContent = $"<p style='color:red;'> Error in view rendering, file name is {viewName}</p>";
+                    ;
                 }
             }
-            
+
             return viewContent;
         }
 
@@ -562,15 +579,15 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             var content = RenderToStringAsync(partialViewFileName, model);
             var themeSection = FireEvent(ThemeSection.Sections.PartialView, partialViewFileName, content, Model);
             content = themeSection.LastOrDefault()?.Content;
-            ViewContext.Writer.WriteLine(content??"");
+            ViewContext.Writer.WriteLine(content ?? "");
             return string.Empty;
         }
 
         public string NccRenderHead(string headViewFile = "Parts/_Head")
         {
             var content = RenderToStringAsync(headViewFile, Model);
-            var themeSections = FireEvent(ThemeSection.Sections.Head,headViewFile, content, Model);
-            content = themeSections.LastOrDefault()?.Content??"";
+            var themeSections = FireEvent(ThemeSection.Sections.Head, headViewFile, content, Model);
+            content = themeSections.LastOrDefault()?.Content ?? "";
             content += Environment.NewLine + $"<meta name=\"generator\" content=\"NetCoreCMS v{NccInfo.Version}\" />";
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
@@ -593,10 +610,10 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
         }
-        
+
         public string NccRenderHeader(string headerViewFile = "Parts/_Header")
         {
-            var content =  RenderToStringAsync(headerViewFile, Model);
+            var content = RenderToStringAsync(headerViewFile, Model);
             var themeSections = FireEvent(ThemeSection.Sections.Header, headerViewFile, content, Model);
             content = themeSections.LastOrDefault()?.Content ?? "";
             ViewContext.Writer.WriteLine(content);
@@ -629,16 +646,16 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
         }
-        
+
         public IHtmlContent NccRenderBody()
         {
-            var bodyBuff = (ViewBuffer)RenderBody();
+            var bodyBuff = (HtmlContentBuilder)RenderBody();
             var content = "";
-            using(var sw = new StringWriter())
+            using (var sw = new StringWriter())
             {
                 bodyBuff.WriteTo(sw, HtmlEncoder);
                 content = sw.GetStringBuilder().ToString();
-            }            
+            }
             var themeSections = FireEvent(ThemeSection.Sections.Body, ViewContext.View.Path, content, Model);
             bodyBuff.Clear();
             bodyBuff.SetHtmlContent(content = themeSections.LastOrDefault()?.Content ?? "");
@@ -694,16 +711,16 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         {
             var globalMessageContainer = "";
             var content = ThemeHelper.GetGlobalMessages(GlobalMessage.MessageFor.Site);
-            if(string.IsNullOrEmpty(content) == false)
+            if (string.IsNullOrEmpty(content) == false)
             {
                 globalMessageContainer = "<div id=\"globalMessageContainer\" class=\"ncc-global-message\">" + content + "</div>";
             }
             var themeSections = FireEvent(ThemeSection.Sections.GlobalMessageContainer, CurrentLayout, globalMessageContainer, Model);
             globalMessageContainer = themeSections.LastOrDefault()?.Content ?? "";
             ViewContext.Writer.WriteLine(globalMessageContainer);
-            return string.Empty;            
+            return string.Empty;
         }
-        
+
         public string NccRenderMessages(string messagesViewFile = "Parts/_Messages")
         {
             var content = RenderToStringAsync(messagesViewFile, Model);
@@ -724,16 +741,16 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 {
                     version = $"?{item.Version}";
                 }
-                if(type == NccResource.ResourceType.JsFile)
+                if (type == NccResource.ResourceType.JsFile)
                 {
                     content += $"<script type=\"text/javascript\" src=\"{item.FilePath}{version}\"></script>" + Environment.NewLine;
                 }
-                else if(type == NccResource.ResourceType.CssFile)
+                else if (type == NccResource.ResourceType.CssFile)
                 {
                     content += $"<link rel=\"stylesheet\" type=\"text/css\" href=\"{item.FilePath}{version}\" />" + Environment.NewLine;
                 }
             }
-            
+
             return content;
         }
 
@@ -751,13 +768,16 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             switch (messageType)
             {
                 case MessageType.Success:
-                    if (appendMessage == true) {
+                    if (appendMessage == true)
+                    {
                         ViewBag.SuccessMessage += message;
                         if (showAfterRedirect)
                         {
                             TempData["SuccessMessage"] += message;
                         }
-                    } else {
+                    }
+                    else
+                    {
                         ViewBag.SuccessMessage = message;
                         if (showAfterRedirect)
                         {
@@ -766,13 +786,16 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                     }
                     break;
                 case MessageType.Info:
-                    if (appendMessage == true) {
+                    if (appendMessage == true)
+                    {
                         ViewBag.InfoMessage += message;
                         if (showAfterRedirect)
                         {
                             TempData["InfoMessage"] += message;
                         }
-                    } else {
+                    }
+                    else
+                    {
                         ViewBag.InfoMessage = message;
                         if (showAfterRedirect)
                         {
@@ -781,13 +804,16 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                     }
                     break;
                 case MessageType.Warning:
-                    if (appendMessage == true) {
+                    if (appendMessage == true)
+                    {
                         ViewBag.WarningMessage += message;
                         if (showAfterRedirect)
                         {
                             TempData["WarningMessage"] += message;
                         }
-                    } else {
+                    }
+                    else
+                    {
                         ViewBag.WarningMessage = message;
                         if (showAfterRedirect)
                         {
@@ -796,13 +822,16 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                     }
                     break;
                 case MessageType.Error:
-                    if (appendMessage == true) {
+                    if (appendMessage == true)
+                    {
                         ViewBag.ErrorMessage += message;
                         if (showAfterRedirect)
                         {
                             TempData["ErrorMessage"] += message;
                         }
-                    } else {
+                    }
+                    else
+                    {
                         ViewBag.ErrorMessage = message;
                         if (showAfterRedirect)
                         {
@@ -811,13 +840,16 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                     }
                     break;
                 default:
-                    if (appendMessage == true) {
+                    if (appendMessage == true)
+                    {
                         ViewBag.SuccessMessage += message;
                         if (showAfterRedirect)
                         {
                             TempData["SuccessMessage"] += message;
                         }
-                    } else {
+                    }
+                    else
+                    {
                         ViewBag.SuccessMessage = message;
                         if (showAfterRedirect)
                         {
@@ -845,12 +877,12 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
 
             foreach (var item in webSiteWidgetList)
             {
-                if(item.Widget == null)
+                if (item.Widget == null)
                 {
-                    var wInstance  = GlobalContext.Widgets.Where(x => x.WidgetId == item.WidgetId).FirstOrDefault();
-                    
+                    var wInstance = GlobalContext.Widgets.Where(x => x.WidgetId == item.WidgetId).FirstOrDefault();
+
                     var type = wInstance.GetType();
-                    var nWInstance = (Widget) GlobalContext.ServiceProvider.GetService(type);
+                    var nWInstance = (Widget)GlobalContext.ServiceProvider.GetService(type);
                     //nWInstance.AddDefaultConfig = wInstance.AddDefaultConfig;
                     //nWInstance.CacheDuration = wInstance.CacheDuration;
                     //nWInstance.ConfigHtml = wInstance.ConfigHtml;
@@ -871,12 +903,12 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
 
             return webSiteWidgetList;
         }
-         
+
         public List<NccMenu> GetMenus(string menuLocation, string language)
         {
             return GlobalContext.Menus.Where(x => x.Position == menuLocation && (x.MenuLanguage == language || string.IsNullOrEmpty(x.MenuLanguage))).ToList();
         }
-        
+
         #region Website Informations
 
         public static string GetCurrentLanguage()

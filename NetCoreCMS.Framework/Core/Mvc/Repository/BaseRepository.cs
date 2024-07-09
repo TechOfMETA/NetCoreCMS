@@ -238,7 +238,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
                 return -1;
             }
              
-            return Context.Database.ExecuteSqlCommand(queryText); 
+            return Context.Database.ExecuteSqlRaw(queryText); 
         }
 
         public List<T> ExecuteSqlQuery<T>(NccDbQueryText query, int timeout = 60, CommandType commandType = CommandType.Text)

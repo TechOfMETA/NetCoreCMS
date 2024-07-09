@@ -17,7 +17,7 @@ using System.Security.Claims;
 namespace NetCoreCMS.Framework.Core.Auth
 {
 
-    public class NccUserStore : UserStore<NccUser,NccRole,NccDbContext, long, IdentityUserClaim<long>, NccUserRole, IdentityUserLogin<long>, IdentityUserToken<long>, IdentityRoleClaim<long>>
+    public class NccUserStore : UserStore<NccUser, NccRole, NccDbContext, long, NccUserClaim, NccUserRole, NccUserLogin, NccUserToken, NccRoleClaim>
     {
         public NccUserStore(NccDbContext context) : base(context)
         {
@@ -30,18 +30,18 @@ namespace NetCoreCMS.Framework.Core.Auth
                 UserId = user.Id,
                 RoleId = role.Id
             };
-        }
+        } 
 
-        protected override IdentityUserClaim<long> CreateUserClaim(NccUser user, Claim claim)
+        protected override NccUserClaim CreateUserClaim(NccUser user, Claim claim)
         {
-            var userClaim = new IdentityUserClaim<long> { UserId = user.Id };
+            var userClaim = new NccUserClaim { UserId = user.Id };
             userClaim.InitializeFromClaim(claim);
             return userClaim;
         }
 
-        protected override IdentityUserLogin<long> CreateUserLogin(NccUser user, UserLoginInfo login)
+        protected override NccUserLogin CreateUserLogin(NccUser user, UserLoginInfo login)
         {
-            return new IdentityUserLogin<long>
+            return new NccUserLogin
             {
                 UserId = user.Id,
                 ProviderKey = login.ProviderKey,
@@ -50,9 +50,9 @@ namespace NetCoreCMS.Framework.Core.Auth
             };
         }
 
-        protected override IdentityUserToken<long> CreateUserToken(NccUser user, string loginProvider, string name, string value)
+        protected override NccUserToken CreateUserToken(NccUser user, string loginProvider, string name, string value)
         {
-            return new IdentityUserToken<long>
+            return new NccUserToken
             {
                 UserId = user.Id,
                 LoginProvider = loginProvider,

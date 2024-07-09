@@ -25,7 +25,7 @@ using NetCoreCMS.Framework.Core.Messages;
 
 namespace NetCoreCMS.Framework.Core.Data
 {
-    public class NccDbContext : IdentityDbContext<NccUser, NccRole, long, IdentityUserClaim<long>, NccUserRole, IdentityUserLogin<long>, IdentityRoleClaim<long>, IdentityUserToken<long>>, IDesignTimeDbContextFactory<NccDbContext>
+    public class NccDbContext : IdentityDbContext<NccUser, NccRole, long, NccUserClaim, NccUserRole, NccUserLogin, NccRoleClaim, NccUserToken>, IDesignTimeDbContextFactory<NccDbContext>
     {
         public NccDbContext()
         {
@@ -42,7 +42,9 @@ namespace NetCoreCMS.Framework.Core.Data
             {
                 try
                 {
-                    typeToRegisters.AddRange(module.Assembly.DefinedTypes.Select(t => t.AsType()));
+                    var types = module.Assembly.DefinedTypes.Select(t => t.AsType());
+                    typeToRegisters.AddRange(types);
+                    //Console.WriteLine(string.Join("\r\n",types.Select(t=>t.FullName)));
                 }
                 catch (Exception ex)
                 {
@@ -61,7 +63,7 @@ namespace NetCoreCMS.Framework.Core.Data
             
             //ScanEntities(modelBuilder, typeToRegisters);
             //SetTableNameByConvention(modelBuilder);
-            base.OnModelCreating(modelBuilder);
+            //base.OnModelCreating(modelBuilder);
             RegisterUserModuleModels(modelBuilder, typeToRegisters);
             RegisterCoreModels(modelBuilder);
             
@@ -124,13 +126,13 @@ namespace NetCoreCMS.Framework.Core.Data
             }
         }
 
-        public NccDbContext Create(DbContextFactoryOptions options)
-        {
-            SetupHelper.LoadSetup();
-            var opts = SetupHelper.GetDbContextOptions();
-            var nccDbConetxt = new NccDbContext(opts);
-            return nccDbConetxt;
-        }
+        //public NccDbContext Create(DbContextFactoryOptions options)
+        //{
+        //    SetupHelper.LoadSetup();
+        //    var opts = SetupHelper.GetDbContextOptions();
+        //    var nccDbConetxt = new NccDbContext(opts);
+        //    return nccDbConetxt;
+        //}
 
         public NccDbContext CreateDbContext(string[] args)
         {

@@ -141,6 +141,8 @@ namespace NetCoreCMS.Web
                         Duration = 300,
                         VaryByQueryKeys = new string[] { "id", "name", "pageNumber", "page", "pageSize", "model", "lang", "status", "sessionId", "requestId", "start", "slug", }
                     });
+
+                    config.EnableEndpointRouting = false;
                 });
 
                 _mvcBuilder.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
@@ -248,6 +250,8 @@ namespace NetCoreCMS.Web
                     _moduleManager.RegisterModuleFilters(_mvcBuilder, _serviceProvider, logger);
                     _moduleManager.RegisterModuleShortCodes(_mvcBuilder, _serviceProvider);
                 }
+
+                _services.AddApplicationInsightsTelemetry();
 
                 GlobalContext.ServiceProvider = _serviceProvider;
                 GlobalContext.Services = _services;

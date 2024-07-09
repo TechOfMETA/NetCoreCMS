@@ -10,6 +10,7 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Models
@@ -29,6 +30,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Models
         }
 
         [Key]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public IdT Id { get; set; }
         public int VersionNumber { get; set; }
         public string Metadata { get; set; }
@@ -36,7 +39,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Models
         public DateTime CreationDate { get; set; }
         public DateTime ModificationDate { get; set; }
         public long CreateBy { get; set; }
-        public long ModifyBy { get; set; }        
-        public int Status { get; set; }       
+        public long ModifyBy { get; set; }
+        public int Status { get; set; }
     }
 }

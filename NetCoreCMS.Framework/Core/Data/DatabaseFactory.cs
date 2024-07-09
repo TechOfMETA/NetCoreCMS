@@ -23,12 +23,12 @@ using System.Text;
 
 namespace NetCoreCMS.Framework.Core.Data
 {
-    public class DatabaseFactory 
+    public class DatabaseFactory
     {
         private static string _sqLiteConString = "Data Source={0}\\{1}.db";
         private static string _sqlLocalDb = "Server=(localdb)\\mssqllocaldb;Database=NetCoreCMS.Web.db;Trusted_Connection=True;MultipleActiveResultSets=true";
         private static string _mySqlConString = "server={0};port={1};database={2};userid={3};pwd={4};sslmode=none;";
-        private static string _msSqlConString = "Data Source={0}; Initial Catalog={1}; User Id = {2}; Password = {3}; MultipleActiveResultSets=true";
+        private static string _msSqlConString = "Data Source={0};Initial Catalog={1};User Id = {2};Password = {3};MultipleActiveResultSets=true;TrustServerCertificate=True";
         private static string _pgSqlConString = "Host={0}; Port={1}; Database={2}; User ID={3}; Password={4}; Pooling=true;";
 
         public static string GetConnectionString(SupportedDatabases engine, DatabaseInfo dbInfo)
@@ -57,7 +57,7 @@ namespace NetCoreCMS.Framework.Core.Data
                         return string.Format(_pgSqlConString, dbInfo.DatabaseHost, dbInfo.DatabasePort, dbInfo.DatabaseName, dbInfo.DatabaseUserName, dbInfo.DatabasePassword);
                 case SupportedDatabases.SqLite:
                     var path = GlobalContext.ContentRootPath;
-                    return string.Format(_sqLiteConString, Path.Combine(path,"Data"), "NetCoreCMS.Database.SqLite");
+                    return string.Format(_sqLiteConString, Path.Combine(path, "Data"), "NetCoreCMS.Database.SqLite");
                 default:
                     return "";
 
@@ -80,7 +80,8 @@ namespace NetCoreCMS.Framework.Core.Data
                     string path = GlobalContext.ContentRootPath;
                     path = Path.Combine(path, "Data");
                     string dbFileName = Path.Combine(path, "NetCoreCMS.Database.SqLite.db");
-                    using (var dbFile = File.Create(dbFileName)) { };                    
+                    using (var dbFile = File.Create(dbFileName))
+                    { };
                     return File.Exists(dbFileName);
             }
             return false;
@@ -102,17 +103,24 @@ namespace NetCoreCMS.Framework.Core.Data
 
             switch (dbe)
             {
-                case SupportedDatabases.MSSQL:                    
+                case SupportedDatabases.MSSQL:
                     optionBuilder.UseSqlServer(SetupHelper.ConnectionString, opt => { opt.MigrationsAssembly("NetCoreCMS.Framework"); opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history"); });
-                    return optionBuilder.Options;                    
+                    return optionBuilder.Options;
                 case SupportedDatabases.MsSqlLocalStorage:
                     break;
-                case SupportedDatabases.MySql:                    
-                    optionBuilder.UseMySql(SetupHelper.ConnectionString, opt => { opt.MigrationsAssembly("NetCoreCMS.Framework"); opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history"); });
-                    return optionBuilder.Options;                    
+                case SupportedDatabases.MySql:
+                    var serverVersion = ServerVersion.Parse(SetupHelper.DbVersion);
+                    optionBuilder.UseMySql(
+                        SetupHelper.ConnectionString,
+                        serverVersion, opt =>
+                        {
+                            opt.MigrationsAssembly("NetCoreCMS.Framework");
+                            opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history");
+                        });
+                    return optionBuilder.Options;
                 case SupportedDatabases.PgSql:
                     break;
-                case SupportedDatabases.SqLite:                    
+                case SupportedDatabases.SqLite:
                     optionBuilder.UseSqlite(SetupHelper.ConnectionString, opt => { opt.MigrationsAssembly("NetCoreCMS.Framework"); opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history"); });
                     return optionBuilder.Options;
             }
@@ -123,7 +131,7 @@ namespace NetCoreCMS.Framework.Core.Data
         public static bool InitilizeDatabase(SupportedDatabases database, string connectionString)
         {
             var builder = new DbContextOptionsBuilder<NccDbContext>();
-            
+
             switch (database)
             {
                 case SupportedDatabases.MSSQL:
@@ -132,7 +140,10 @@ namespace NetCoreCMS.Framework.Core.Data
                 case SupportedDatabases.MsSqlLocalStorage:
                     break;
                 case SupportedDatabases.MySql:
-                    builder.UseMySql(SetupHelper.ConnectionString, opt => { opt.MigrationsAssembly("NetCoreCMS.Framework"); opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history"); });
+                    var serverVersion = ServerVersion.Parse(SetupHelper.DbVersion);
+                    builder.UseMySql(SetupHelper.ConnectionString,
+                        serverVersion,
+                        opt => { opt.MigrationsAssembly("NetCoreCMS.Framework"); opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history"); });
                     break;
                 case SupportedDatabases.SqLite:
                     builder.UseSqlite(SetupHelper.ConnectionString, opt => { opt.MigrationsAssembly("NetCoreCMS.Framework"); opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history"); });
@@ -144,7 +155,10 @@ namespace NetCoreCMS.Framework.Core.Data
 
 
             var dbContext = new NccDbContext(builder.Options);
-            dbContext.Database.Migrate();
+            //string scripts = string.Join("\r\n", dbContext.Database.GetMigrations());
+            //Console.Write(scripts);
+            if (database == SupportedDatabases.MySql)
+                dbContext.Database.Migrate();
             return dbContext.Database.EnsureCreated();
         }
     }

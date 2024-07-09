@@ -9,27 +9,24 @@
  *************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.IO;
-using Newtonsoft.Json;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
-using NetCoreCMS.Framework.Core.Data;
-using NetCoreCMS.Framework.Core.Auth;
-using NetCoreCMS.Framework.Core.Models;
 using Microsoft.AspNetCore.Identity;
-using NetCoreCMS.Framework.Utility;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NetCoreCMS.Framework.Core.Auth;
+using NetCoreCMS.Framework.Core.Data;
+using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Repository;
 using NetCoreCMS.Framework.Core.Services;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using NetCoreCMS.Framework.Core.Extensions;
-using NetCoreCMS.Framework.Resources;
-using NetCoreCMS.Framework.Core;
-using System.Linq;
-using NetCoreCMS.Framework.Resources;
-using System.Reflection;
 using NetCoreCMS.Framework.i18n;
+using NetCoreCMS.Framework.Resources;
+using NetCoreCMS.Framework.Utility;
+using Newtonsoft.Json;
 using static NetCoreCMS.Framework.Core.Models.NccPage;
 using static NetCoreCMS.Framework.Core.Models.NccPost;
 
@@ -47,7 +44,8 @@ namespace NetCoreCMS.Framework.Setup
         public static bool IsAdminCreateComplete { get; set; }
         public static string SelectedDatabase { get; set; }
         public static string ConnectionString { get; set; }
-        public static int LoggingLevel { get; set; } = (int) LogLevel.Error;
+        public static string DbVersion { get; set; } = "10.3.39";
+        public static int LoggingLevel { get; set; } = (int)LogLevel.Error;
         public static string Language { get; set; }
         public static string StartupType { get; set; } = StartupTypeText.Url;
         public static string StartupData { get; set; } = "/CmsHome";
@@ -90,13 +88,13 @@ namespace NetCoreCMS.Framework.Setup
         public static SetupConfig LoadSetup()
         {
             var rootDir = GlobalContext.ContentRootPath;
-            if(rootDir == null)
+            if (rootDir == null)
             {
                 rootDir = Directory.GetCurrentDirectory();
             }
-            
+
             var config = new SetupConfig();
-            
+
             var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
             using (StreamReader sr = new StreamReader(file))
             {
@@ -142,18 +140,18 @@ namespace NetCoreCMS.Framework.Setup
             File.Delete(_configFileName);
         }
 
-        public static async Task<NccUser> CreateSuperAdminUser(  
+        public static async Task<NccUser> CreateSuperAdminUser(
             NccDbContext nccDbContext,
             UserManager<NccUser> userManager,
             RoleManager<NccRole> roleManager,
             SignInManager<NccUser> signInManager,
             WebSiteInfo setupInfo
             )
-        {   
-            
+        {
+
             CreateCmsDefaultRoles(nccDbContext, roleManager);
             NccRole superAdmin = await roleManager.FindByNameAsync(NccCmsRoles.SuperAdmin);
-            if(superAdmin != null)
+            if (superAdmin != null)
             {
                 var adminUser = new NccUser()
                 {
@@ -172,7 +170,7 @@ namespace NetCoreCMS.Framework.Setup
 
             return null;
         }
-        
+
         private static void CreateCmsDefaultRoles(NccDbContext nccDbContext, RoleManager<NccRole> roleManager)
         {
             var nccPermissionService = new NccPermissionService(new NccPermissionRepository(nccDbContext), new NccPermissionDetailsRepository(nccDbContext));
@@ -182,7 +180,7 @@ namespace NetCoreCMS.Framework.Setup
             var author = CreatePermissionObject("Author");
             var contributor = CreatePermissionObject("Contributor");
             var subscriber = CreatePermissionObject("Subscriber");
-            
+
             nccPermissionService.Save(
                 new List<NccPermission>() {
                     administrator,
@@ -193,11 +191,11 @@ namespace NetCoreCMS.Framework.Setup
                     subscriber
                 }
             );
-            
+
             NccRole superAdmin = new NccRole() { Name = NccCmsRoles.SuperAdmin, NormalizedName = NccCmsRoles.SuperAdmin };
             var sa = roleManager.CreateAsync(superAdmin).Result;
         }
-         
+
         private static NccPermission CreatePermissionObject(string roleName)
         {
             var assembly = typeof(SharedResource).GetTypeInfo().Assembly;
@@ -207,22 +205,22 @@ namespace NetCoreCMS.Framework.Setup
                 var admJson = sr.ReadToEndAsync().Result;
                 var permission = JsonConvert.DeserializeObject<NccPermission>(admJson);
                 return permission;
-            }            
+            }
         }
 
         internal static DbContextOptions GetDbContextOptions()
         {
-            return DatabaseFactory.GetDbContextOptions();            
+            return DatabaseFactory.GetDbContextOptions();
         }
 
         public static void InitilizeDatabase()
         {
-            DatabaseFactory.InitilizeDatabase((SupportedDatabases)Enum.Parse(typeof(SupportedDatabases),SelectedDatabase), ConnectionString);
+            DatabaseFactory.InitilizeDatabase((SupportedDatabases)Enum.Parse(typeof(SupportedDatabases), SelectedDatabase), ConnectionString);
         }
-        
+
         public static bool CreateDatabase(SupportedDatabases database, DatabaseInfo databaseInfo)
         {
-            DatabaseFactory.CreateDatabase(database, databaseInfo);            
+            DatabaseFactory.CreateDatabase(database, databaseInfo);
             return true;
         }
 
@@ -604,7 +602,7 @@ namespace NetCoreCMS.Framework.Setup
                 EmailAddress = webSiteInfo.Email,
                 Language = webSiteInfo.Language,
                 NewUserRole = "Subscriber",
-                TimeZone = "UTC_6",                
+                TimeZone = "UTC_6",
                 EnableCache = webSiteInfo.EnableCache
             };
 
@@ -642,26 +640,26 @@ namespace NetCoreCMS.Framework.Setup
                 case SupportedDatabases.MSSQL:
                     GlobalContext.Services.AddDbContext<NccDbContext>(options =>
                         options.UseSqlServer(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"))
-                    );                    
+                    );
                     break;
                 case SupportedDatabases.MsSqlLocalStorage:
                     break;
                 case SupportedDatabases.MySql:
                     GlobalContext.Services.AddDbContext<NccDbContext>(options =>
-                        options.UseMySql(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"))
+                        options.UseMySql( SetupHelper.ConnectionString,ServerVersion.Parse(SetupHelper.DbVersion), opts => opts.MigrationsAssembly("NetCoreCMS.Framework"))
                     );
-                    
+
                     break;
                 case SupportedDatabases.SqLite:
                     GlobalContext.Services.AddDbContext<NccDbContext>(options =>
                         options.UseSqlite(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"))
                     );
-                    
+
                     break;
                 case SupportedDatabases.PgSql:
                     break;
             }
-            
+
         }
 
         internal static string GetCoreModuleTablePrefix()

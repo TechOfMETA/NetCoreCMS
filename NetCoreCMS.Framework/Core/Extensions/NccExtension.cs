@@ -39,7 +39,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using System.IO.Compression;
 using MediatR;
 using NetCoreCMS.Framework.Modules;
-
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 namespace NetCoreCMS.Framework.Core.Extensions
 {
     public static class NccExtension
@@ -158,17 +158,26 @@ namespace NetCoreCMS.Framework.Core.Extensions
 
         public static IServiceCollection AddModuleDependencies(this IServiceCollection services, IMvcBuilder mvcBuilder)
         {
-            mvcBuilder.AddRazorOptions(options =>
-            {
-                Hashtable moduleDependencies = GlobalContext.GetModuleDependencies();
+            //mvcBuilder.AddRazorOptions(options =>
+            //{
+            //    Hashtable moduleDependencies = GlobalContext.GetModuleDependencies();
+            //    foreach (ModuleDependedLibrary mdl in moduleDependencies.Values)
+            //    {
+            //        foreach (var path in mdl.AssemblyPaths)
+            //        {
+            //            options.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(path));
+            //        }
+            //    }
+            //});
+
+            Hashtable moduleDependencies = GlobalContext.GetModuleDependencies();
                 foreach (ModuleDependedLibrary mdl in moduleDependencies.Values)
                 {
                     foreach (var path in mdl.AssemblyPaths)
                     {
-                        options.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(path));
+                      mvcBuilder.AddApplicationPart(path.Value);
                     }
-                }
-            });
+                } 
 
             return services;
         }

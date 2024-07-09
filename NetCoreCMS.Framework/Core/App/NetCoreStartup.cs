@@ -37,10 +37,13 @@ namespace NetCoreCMS.Framework.Core.App
             }
             else if (SetupHelper.SelectedDatabase == "MySql")
             {
-                services.AddDbContext<NccDbContext>(options => {
-                    options.UseMySql(SetupHelper.ConnectionString, opt => { opt.MigrationsAssembly("NetCoreCMS.Framework"); opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history"); }); 
+                services.AddDbContext<NccDbContext>(options =>
+                {
+                    options.UseMySql(SetupHelper.ConnectionString,
+                        ServerVersion.Parse(SetupHelper.DbVersion),
+                        opt => { opt.MigrationsAssembly("NetCoreCMS.Framework"); opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history"); });
                 }, ServiceLifetime.Scoped, ServiceLifetime.Scoped);
-                
+
             }
             else
             {

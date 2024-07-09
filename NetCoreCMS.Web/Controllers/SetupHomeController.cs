@@ -25,6 +25,7 @@ using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Utility;
+using NetCoreCMS.Web.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
 {
     [AllowAnonymous]
     public class SetupHomeController : NccController
-    { 
+    {
 
         IHttpContextAccessor _httpContextAccessor;
         ILoggerFactory _loggerFactory;
@@ -51,7 +52,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
             {
                 return View();
             }
-            else if(!SetupHelper.IsAdminCreateComplete)
+            else if (!SetupHelper.IsAdminCreateComplete)
             {
                 return RedirectToAction("CreateAdmin");
             }
@@ -103,7 +104,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
         {
             if (SetupHelper.IsDbCreateComplete == true && SetupHelper.IsAdminCreateComplete == false)
             {
-                ViewBag.Languages = new SelectList(SupportedCultures.Cultures.Select(x => new { Value = x.TwoLetterISOLanguageName, Text = x.DisplayName }).ToList(), "Value","Text");
+                ViewBag.Languages = new SelectList(SupportedCultures.Cultures.Select(x => new { Value = x.TwoLetterISOLanguageName, Text = x.DisplayName }).ToList(), "Value", "Text");
                 ViewBag.TablePrefix = TempData["TablePrefix"];
                 return View();
             }
@@ -115,12 +116,13 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateAdmin(AdminViewModel viewModel)
         {
-            if (viewModel.AdminPassword != viewModel.ConfirmPassword) {
+            if (viewModel.AdminPassword != viewModel.ConfirmPassword)
+            {
                 ViewBag.Languages = new SelectList(SupportedCultures.Cultures.Select(x => new { Value = x.TwoLetterISOLanguageName, Text = x.DisplayName }).ToList(), "Value", "Text");
                 ModelState.AddModelError("ConfirmPassword", "Password does not match");
                 return View(viewModel);
             }
-             
+
             SetupHelper.InitilizeDatabase();
 
             if (SetupHelper.IsDbCreateComplete == true && SetupHelper.IsAdminCreateComplete == false)
@@ -130,7 +132,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
                     ViewBag.Languages = new SelectList(SupportedCultures.Cultures.Select(x => new { Value = x.TwoLetterISOLanguageName, Text = x.DisplayName }).ToList(), "Value", "Text");
                     return View(viewModel);
                 }
-                
+
                 var optionBuilder = new DbContextOptionsBuilder<NccDbContext>();
 
                 SupportedDatabases supportedDatabases = TypeConverter.TryParseDatabaseEnum(SetupHelper.SelectedDatabase);
@@ -143,7 +145,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
                     case SupportedDatabases.MsSqlLocalStorage:
                         break;
                     case SupportedDatabases.MySql:
-                        optionBuilder.UseMySql(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
+                        optionBuilder.UseMySql(SetupHelper.ConnectionString, ServerVersion.Parse(SetupHelper.DbVersion), opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
                         break;
                     case SupportedDatabases.SqLite:
                         optionBuilder.UseSqlite(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
@@ -192,7 +194,8 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
 
                 var claimsFactory = new UserClaimsPrincipalFactory<NccUser, NccRole>(userManager, roleManager, identityOptions);
                 var signInLogger = _loggerFactory.CreateLogger<SignInManager<NccUser>>();
-                var signInManager = new NccSignInManager<NccUser>(userManager, _httpContextAccessor, claimsFactory, identityOptions, signInLogger, scheme);
+                var userConfirmation = new NothingUserConfirmation<NccUser>();
+                var signInManager = new NccSignInManager<NccUser>(userManager, _httpContextAccessor, claimsFactory, identityOptions, signInLogger, scheme, userConfirmation);
 
                 //nccDbConetxt.Database.Migrate();
 
@@ -211,7 +214,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
 
                 //SetupHelper.RegisterAuthServices(supportedDatabases);
                 var admin = await SetupHelper.CreateSuperAdminUser(nccDbConetxt, userManager, roleManager, signInManager, setupInfo);
-                if(admin != null)
+                if (admin != null)
                 {
                     SetupHelper.IsAdminCreateComplete = true;
                     SetupHelper.Language = viewModel.Language;
@@ -226,16 +229,16 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
                 {
                     TempData["ErrorMessage"] = "Could not create Admin user and Roles.";
                     return Redirect("/Home/Error");
-                }                
+                }
             }
 
             TempData["ErrorMessage"] = "Setup already completed.";
             return Redirect("/Home/Error");
         }
-  
+
         public ActionResult Success()
         {
             return View();
-        }        
+        }
     }
 }

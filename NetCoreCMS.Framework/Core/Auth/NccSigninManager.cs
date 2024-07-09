@@ -19,16 +19,17 @@ namespace NetCoreCMS.Framework.Core.Auth
 {
     public class NccSignInManager<TUser> : SignInManager<TUser> where TUser : class
     {
-         public NccSignInManager(UserManager<TUser> userManager,
-            IHttpContextAccessor contextAccessor,
-            IUserClaimsPrincipalFactory<TUser> claimsFactory,
-            IOptions<IdentityOptions> optionsAccessor,
-            ILogger<SignInManager<TUser>> logger,
-            IAuthenticationSchemeProvider schemes
-            )
-            : base(userManager, contextAccessor, claimsFactory, optionsAccessor, logger, schemes)
+        public NccSignInManager(UserManager<TUser> userManager,
+           IHttpContextAccessor contextAccessor,
+           IUserClaimsPrincipalFactory<TUser> claimsFactory,
+           IOptions<IdentityOptions> optionsAccessor,
+           ILogger<SignInManager<TUser>> logger,
+           IAuthenticationSchemeProvider schemes,
+           IUserConfirmation<TUser> confirmation
+           )
+           : base(userManager, contextAccessor, claimsFactory, optionsAccessor, logger, schemes, confirmation)
         {
-            
+
         }
 
         public override async Task SignInAsync(TUser user, bool isPersistent, string authenticationMethod = null)
