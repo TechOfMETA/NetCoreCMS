@@ -649,7 +649,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
 
         public IHtmlContent NccRenderBody()
         {
-            var bodyBuff = (HtmlContentBuilder)RenderBody();
+            var bodyBuff = RenderBody();
             var content = "";
             using (var sw = new StringWriter())
             {
@@ -657,9 +657,11 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 content = sw.GetStringBuilder().ToString();
             }
             var themeSections = FireEvent(ThemeSection.Sections.Body, ViewContext.View.Path, content, Model);
-            bodyBuff.Clear();
-            bodyBuff.SetHtmlContent(content = themeSections.LastOrDefault()?.Content ?? "");
-            return bodyBuff;
+
+            content = themeSections.LastOrDefault()?.Content ?? "";
+            HtmlContentBuilder newHtmlContentBuilder = new HtmlContentBuilder();
+            newHtmlContentBuilder.SetHtmlContent(content);
+            return newHtmlContentBuilder;
         }
 
         public string NccRenderRightColumn(string rightColumnViewFile = "Parts/_RightColumn")

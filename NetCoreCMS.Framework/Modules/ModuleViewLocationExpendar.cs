@@ -18,7 +18,7 @@ namespace NetCoreCMS.Framework.Modules
     public class ModuleViewLocationExpendar : IViewLocationExpander
     {
         private const string _moduleKey = "module";
-                
+
         public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
         {
             if (context.Values.ContainsKey(_moduleKey))
@@ -34,10 +34,10 @@ namespace NetCoreCMS.Framework.Modules
                         "/Themes/"+ ThemeHelper.ActiveTheme.ThemeId +"/Views/{1}/{0}.cshtml",
                         "/Themes/"+ ThemeHelper.ActiveTheme.ThemeId +"/Views/{0}.cshtml",
                         "/Themes/"+ ThemeHelper.ActiveTheme.ThemeId +"/Views/" + module + "/{0}.cshtml",
-                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeId +"/Views/" + module + "/{1}/{0}.cshtml", 
+                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeId +"/Views/" + module + "/{1}/{0}.cshtml",
                         "/Themes/"+ ThemeHelper.ActiveTheme.ThemeId +"/Shared/{0}.cshtml",
                         "/Themes/"+ ThemeHelper.ActiveTheme.ThemeId +"/Shared/Layouts/{0}.cshtml",
-                        
+
                         "/Modules/" + module + "/Views/{1}/{0}.cshtml",
                         "/Modules/" + module + "/Views/Shared/{0}.cshtml",
                         "/Modules/" + module + "/Views/{0}.cshtml",
@@ -47,10 +47,15 @@ namespace NetCoreCMS.Framework.Modules
                         "/Core/" + module + "/Views/{0}.cshtml",
 
                         "/Views/{1}/{0}.cshtml",
-                        "/Views/Shared/{0}.cshtml"
+                        "/Views/Shared/{0}.cshtml",
                     };
 
-                    viewLocations = moduleViewLocations.Concat(viewLocations);
+                    viewLocations = moduleViewLocations.Concat(viewLocations).Concat(new[]
+                    {
+                        "/Shared/{0}.cshtml",
+                        "/Shared/Layouts/{0}.cshtml"
+                    });
+
                 }
             }
             return viewLocations;
@@ -59,12 +64,12 @@ namespace NetCoreCMS.Framework.Modules
         public void PopulateValues(ViewLocationExpanderContext context)
         {
             dynamic controller = context.ActionContext.ActionDescriptor;
-            
+
             if (controller != null)
             {
                 var controllerTypeInfo = controller.ControllerTypeInfo;
                 string moduleName = controllerTypeInfo.Module.Name;
-                var area = 
+                var area =
                 moduleName = moduleName.Remove(moduleName.Length - 4);
                 if (moduleName != "NetCoreCMS.Web")
                 {

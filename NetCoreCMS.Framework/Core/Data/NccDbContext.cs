@@ -22,6 +22,7 @@ using NetCoreCMS.Framework.Setup;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Design;
 using NetCoreCMS.Framework.Core.Messages;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace NetCoreCMS.Framework.Core.Data
 {
@@ -33,6 +34,12 @@ namespace NetCoreCMS.Framework.Core.Data
         }
         public NccDbContext(DbContextOptions options) : base(options)
         {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.NavigationBaseIncludeIgnored, CoreEventId.NavigationBaseIncluded));
+            base.OnConfiguring(optionsBuilder);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

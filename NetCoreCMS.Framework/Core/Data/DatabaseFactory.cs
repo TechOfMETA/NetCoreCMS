@@ -10,6 +10,7 @@
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Setup;
@@ -153,6 +154,10 @@ namespace NetCoreCMS.Framework.Core.Data
             }
             //builder.UseSqlite(connectionString, options => options.MigrationsAssembly("NetCoreCMS.Framework"));
 
+            //The navigation 'NccUserPermission.User' was ignored from 'Include' in the query since the fix-up will automatically populate it.
+            //If any further navigations are specified in 'Include' afterwards then they will be ignored. Walking back include tree is not allowed.
+            //This exception can be suppressed or logged by passing event ID 'CoreEventId.NavigationBaseIncludeIgnored'
+            //to the 'ConfigureWarnings' method in 'DbContext.OnConfiguring' or 'AddDbContext' 
 
             var dbContext = new NccDbContext(builder.Options);
             //string scripts = string.Join("\r\n", dbContext.Database.GetMigrations());

@@ -9,7 +9,7 @@
   "Version": "0.1.2",
   "NccVersion": "0.4.5",
   "Category": "Default",
-  "IsActive": true,
+  "IsActive": false,
   "MenuLocations": [
     "Top",
     "Navigation",
@@ -73,7 +73,7 @@
     }
   ],
   "Settings": {
-    "version": 2.000000000000001,
-    "style": "light.css"
+    "style": "light.css",
+    "version": 2.000000000000001
   }
 }
