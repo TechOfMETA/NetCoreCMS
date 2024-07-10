@@ -162,8 +162,10 @@ namespace NetCoreCMS.Framework.Core.Data
             var dbContext = new NccDbContext(builder.Options);
             //string scripts = string.Join("\r\n", dbContext.Database.GetMigrations());
             //Console.Write(scripts);
-            if (database == SupportedDatabases.MySql)
-                dbContext.Database.Migrate();
+
+            //if (database == SupportedDatabases.MySql)
+            //    dbContext.Database.Migrate();
+
             return dbContext.Database.EnsureCreated();
         }
     }

@@ -54,6 +54,8 @@ using System.Net;
 using NetCoreCMS.Framework.Core.Services;
 using System.Collections;
 using NetCoreCMS.Framework.ViewCompiler;
+using Microsoft.CodeAnalysis.Options;
+using NetCoreCMS.Framework.Helpers.UrlHelpers;
 
 namespace NetCoreCMS.Web
 {
@@ -240,7 +242,12 @@ namespace NetCoreCMS.Web
 
                 _services.Configure<RouteOptions>(options =>
                 {
+                    //options.LowercaseQueryStrings = true;
+                    //options.LowercaseUrls = true;
+
                     options.ConstraintMap.Add("lang", typeof(LanguageRouteConstraint));
+                    options.ConstraintMap.Add("slugify", typeof(SlugifyParameterTransformer));
+
                 });
 
                 _services.Configure<RequestLocalizationOptions>(

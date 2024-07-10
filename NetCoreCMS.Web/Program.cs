@@ -19,6 +19,9 @@ using System.Diagnostics;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Framework.Setup;
 using System.Text;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Builder;
+using System.Net.WebSockets;
 
 namespace NetCoreCMS.Web
 {
@@ -34,10 +37,10 @@ namespace NetCoreCMS.Web
             Console.WriteLine($"AppContext.BaseDir [AppContext.BaseDirectory]:\r\n\t\t{AppContext.BaseDirectory}");
             Console.WriteLine($"Runtime Call [MainModule.FileName]:\r\n\t\t{Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName)}");
             Console.WriteLine($"Current directory [Directory.GetCurrentDirectory()]:\r\n\t\t{Directory.GetCurrentDirectory()}");
-            Console.WriteLine($"======================================================================================="); 
+            Console.WriteLine($"=======================================================================================");
 
 
-            Console.OutputEncoding = Encoding.UTF8; 
+            Console.OutputEncoding = Encoding.UTF8;
             NetCoreCmsHost.StartForerver(starterThread, new ParameterizedThreadStart(StartApp), Directory.GetCurrentDirectory(), args);
         }
 
@@ -45,6 +48,18 @@ namespace NetCoreCMS.Web
         {
             BuildWebHost((string[])argsObj).Run();
         }
+
+        //public static IHost BuildWebHostV8(string[] args)
+        //{
+        //    var builder = WebApplication.CreateBuilder(args);
+        //    builder.Host.UseContentRoot(Directory.GetCurrentDirectory());
+        //    var config = builder.Configuration;
+        //    var startup = new Startup_V8(config, builder.Environment);
+        //    startup.ConfigureServices(builder.Services);
+        //    var app = builder.Build();
+        //    startup.Configure(app);
+        //    return app;
+        //}
 
         public static IWebHost BuildWebHost(string[] args)
         {
