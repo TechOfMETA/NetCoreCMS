@@ -18,6 +18,7 @@ using NetCoreCMS.Framework.Core.App;
 using System.Diagnostics;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Framework.Setup;
+using System.Text;
 
 namespace NetCoreCMS.Web
 {
@@ -25,15 +26,24 @@ namespace NetCoreCMS.Web
     {
         private static IWebHost nccWebHost;
         private static Thread starterThread = new Thread(StartApp);
-        
+
         public static void Main(string[] args)
         {
+            Console.WriteLine($"Launched from [Environment.CurrentDirectory]:\r\n\t\t{Environment.CurrentDirectory}");
+            Console.WriteLine($"Physical location [AppDomain.CurrentDomain.BaseDirectory]:\r\n\t\t{AppDomain.CurrentDomain.BaseDirectory}");
+            Console.WriteLine($"AppContext.BaseDir [AppContext.BaseDirectory]:\r\n\t\t{AppContext.BaseDirectory}");
+            Console.WriteLine($"Runtime Call [MainModule.FileName]:\r\n\t\t{Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName)}");
+            Console.WriteLine($"Current directory [Directory.GetCurrentDirectory()]:\r\n\t\t{Directory.GetCurrentDirectory()}");
+            Console.WriteLine($"======================================================================================="); 
+
+
+            Console.OutputEncoding = Encoding.UTF8; 
             NetCoreCmsHost.StartForerver(starterThread, new ParameterizedThreadStart(StartApp), Directory.GetCurrentDirectory(), args);
         }
 
         private static void StartApp(object argsObj)
         {
-            BuildWebHost((string[])argsObj).Run();            
+            BuildWebHost((string[])argsObj).Run();
         }
 
         public static IWebHost BuildWebHost(string[] args)
@@ -51,12 +61,12 @@ namespace NetCoreCMS.Web
 
         public static async Task RestartAppAsync()
         {
-            NetCoreCmsHost.StopAppAsync(nccWebHost);            
+            await NetCoreCmsHost.StopAppAsync(nccWebHost);
         }
 
         public static async Task ShutdownAppAsync()
         {
-            NetCoreCmsHost.ShutdownAppAsync(nccWebHost);
+            await NetCoreCmsHost.ShutdownAppAsync(nccWebHost);
         }
     }
 }

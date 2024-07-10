@@ -392,7 +392,7 @@ namespace NetCoreCMS.Framework.Utility
             var path = Path.Combine(ContentRootPath, "Resources");
             if (HostingEnvironment.IsDevelopment())
             {
-                path = Path.Combine(ContentRootPath, "bin", "Debug", "netcoreapp2.0", "Resources");
+                path = Path.Combine(ContentRootPath, "bin", "Debug", "net8.0", "Resources");
             }
             return path;
         }

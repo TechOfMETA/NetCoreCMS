@@ -125,8 +125,8 @@
                                 <div class="panel-body">
                                     <div class="form-group">
                                         <label class="col-md-4 text-right">Date Range? </label>
-                                        <div class="col-md-8">
-                                            <input type="checkbox" asp-for="HasDateRange" @{Model.HasDateRange == true ? "checked" : "";} />
+                                        <div class="col-md-8"> 
+                                            <input type="checkbox" asp-for="HasDateRange" checked="@(Model.HasDateRange==true) />
                                         </div>
                                     </div>
                                     <div class="form-group">

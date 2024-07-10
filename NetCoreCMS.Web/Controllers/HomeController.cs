@@ -160,16 +160,16 @@ namespace NetCoreCMS.Web.Controllers
             string referer = Request.Headers["Referer"].ToString();
             if (referer.EndsWith("/SetupHome/CreateAdmin"))
             {
-                Program.RestartAppAsync();
+                await Program.RestartAppAsync();
             }
             return View();
         }
-        
+
         public async System.Threading.Tasks.Task<IActionResult> RestartHost()
         {
             string referer = Request.Headers["Referer"].ToString();
             NetCoreCmsHost.IsRestartRequired = true;
-            Program.RestartAppAsync();
+            await Program.RestartAppAsync();
             NetCoreCmsHost.IsRestartRequired = false;
             ViewBag.ReturnUrl = referer;
             ViewBag.ReturnUrlName = referer;

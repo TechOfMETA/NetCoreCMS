@@ -53,6 +53,7 @@ using NetCoreCMS.Framework.Core.Mvc.Cache;
 using System.Net;
 using NetCoreCMS.Framework.Core.Services;
 using System.Collections;
+using NetCoreCMS.Framework.ViewCompiler;
 
 namespace NetCoreCMS.Web
 {
@@ -88,8 +89,8 @@ namespace NetCoreCMS.Web
 
                 var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");
                 ConfigurationRoot = builder.Build();
-                ResetGlobalContext(configuration, env); 
-                
+                ResetGlobalContext(configuration, env);
+
                 _moduleManager = new ModuleManager();
                 _themeManager = new ThemeManager();
 
@@ -129,7 +130,7 @@ namespace NetCoreCMS.Web
                 _services.AddOptions();
                 _services.AddSingleton(typeof(IStringLocalizer), typeof(NccStringLocalizer<SharedResource>));
                 _services.AddLocalization();
-
+                //_services.AddNccViewCompilerProvider(); 
                 _mvcBuilder = _services.AddMvc(config =>
                 {
                     var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
@@ -139,18 +140,39 @@ namespace NetCoreCMS.Web
                     {
                         VaryByHeader = "User-Agent",
                         Duration = 300,
-                        VaryByQueryKeys = new string[] { "id", "name", "pageNumber", "page", "pageSize", "model", "lang", "status", "sessionId", "requestId", "start", "slug", }
+                        VaryByQueryKeys = new string[] {
+                            "id",
+                            "name",
+                            "pageNumber",
+                            "page",
+                            "pageSize",
+                            "model", "lang",
+                            "status",
+                            "sessionId",
+                            "requestId",
+                            "start",
+                            "slug", }
                     });
 
                     config.EnableEndpointRouting = false;
                 });
+                //_mvcBuilder.SetCompatibilityVersion(CompatibilityVersion.Version_2_0)
+                //_mvcBuilder.AddRazorRuntimeCompilation(o =>
+                //    {
+                //        var root = new DirectoryInfo(Directory.GetCurrentDirectory());
+                //        var views = root.Parent.GetFiles("*.cshtml", SearchOption.AllDirectories);
+                //        foreach (var view in views)
+                //        {
+                //            o.AdditionalReferencePaths.Add(view.FullName);
+                //        }
+                //    });
 
                 _mvcBuilder.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
                 _mvcBuilder.AddDataAnnotationsLocalization(options =>
                 {
                     options.DataAnnotationLocalizerProvider = (type, factory) => new NccStringLocalizer<SharedResource>(factory, new HttpContextAccessor());
                 });
-                
+
                 _services.AddMaintenance(() => _setupConfig.IsMaintenanceMode, Encoding.UTF8.GetBytes("<div style='width:100%;text-align:center; padding-top:10px;'><h1>" + _setupConfig.MaintenanceMessage + "</h1></div>"), "text/html", _setupConfig.MaintenanceDownTime * 60);
 
                 _services.AddSession(options =>
@@ -173,6 +195,11 @@ namespace NetCoreCMS.Web
                 var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
                 var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
                 var themesDirectoryContents = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ThemeFolder);
+
+                Console.WriteLine($"ContentRootPath: {_hostingEnvironment.ContentRootPath}");
+                Console.WriteLine($"Theme Folder: {NccInfo.ThemeFolder}");
+                Console.WriteLine($"Module Folder: {NccInfo.ModuleFolder}");
+                Console.WriteLine($"CoreModule Folder: {NccInfo.CoreModuleFolder}");
 
                 _themeManager.ScanThemeDirectory(themeFolder);
                 _themeManager.RegisterThemes(_mvcBuilder, _services, _serviceProvider, themesDirectoryContents);
@@ -198,8 +225,8 @@ namespace NetCoreCMS.Web
                     _moduleManager.AddModuleAuthorizationHandlers(_services, logger);
 
                     _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
-                    
-                    _services.AddCustomizedIdentity(_serviceProvider.GetService<INccSettingsService>());                    
+
+                    _services.AddCustomizedIdentity(_serviceProvider.GetService<INccSettingsService>());
                     _moduleManager.LoadModuleMenus(logger);
                 }
 
@@ -208,7 +235,7 @@ namespace NetCoreCMS.Web
                 if (SetupHelper.IsAdminCreateComplete)
                 {
                     GlobalContext.SetupConfig = SetupHelper.LoadSetup();
-                    defaultCulture = new RequestCulture(GlobalContext.SetupConfig.Language);                    
+                    defaultCulture = new RequestCulture(GlobalContext.SetupConfig.Language);
                 }
 
                 _services.Configure<RouteOptions>(options =>
@@ -271,7 +298,7 @@ namespace NetCoreCMS.Web
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             var log = loggerFactory.CreateLogger<Startup>();
-            
+
             try
             {
                 if (env.IsDevelopment())
@@ -290,11 +317,11 @@ namespace NetCoreCMS.Web
 
                 app.UseRequestTracker();
                 app.UseNetCoreCMS(env, _serviceProvider, loggerFactory);
-                app.UseNccRoutes(env, _serviceProvider, loggerFactory);                
+                app.UseNccRoutes(env, _serviceProvider, loggerFactory);
             }
             catch (Exception ex)
             {
-                _exceptions[ExceptionsOnConfigure].Add(ex);                
+                _exceptions[ExceptionsOnConfigure].Add(ex);
             }
 
             foreach (var item in _exceptions)
@@ -308,6 +335,7 @@ namespace NetCoreCMS.Web
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine(ex.ToString());
                     //:(
                 }
             }
@@ -328,7 +356,7 @@ namespace NetCoreCMS.Web
                               log.LogError($"{ex.Key}:::{val.Message}");
                               errorMessage += "<h5 style='color:red;'>" + val.Message + "</h5><hr/>";
 
-                              if(env.IsProduction() == false)
+                              if (env.IsProduction() == false)
                               {
                                   errorMessage += "Stack trace: " + val.StackTrace + "<br/>";
                               }
@@ -354,6 +382,9 @@ namespace NetCoreCMS.Web
             GlobalContext.Menus = new List<NccMenu>();
             GlobalContext.Themes = new List<Theme>();
             GlobalContext.WidgetTypes = new Hashtable();
+
+            Console.WriteLine($"GlobalContext.ContentRootPath = {env.ContentRootPath}");
+            Console.WriteLine($"GlobalContext.WebRootPath = {env.WebRootPath}");
         }
         private void AddLogger()
         {

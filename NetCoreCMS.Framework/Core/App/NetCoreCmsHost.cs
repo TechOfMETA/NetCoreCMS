@@ -25,20 +25,20 @@ namespace NetCoreCMS.Framework.Core.App
         public static bool IsRestartRequired { get; set; }
         public static string AppRootDirectory { get; set; }
         public static IMediator Mediator { get; set; }
-        public static ILogger Logger{ get; set; }
+        public static ILogger Logger { get; set; }
         public static HttpContext HttpContext { get; set; }
         public static IServiceCollection Services { get; set; }
         public static IServiceProvider ServiceProvider { get; set; }
 
         private static bool _isShutdown = false;
-        private static int _heartBitRate = 2000;        
+        private static int _heartBitRate = 2000;
         private static Thread _starterThread;
-        
+
         public static void StartForerver(Thread starterThread, ParameterizedThreadStart webHostStarter, string currentDirectory, string[] args)
-        { 
-            AppRootDirectory = currentDirectory;            
+        {
+            AppRootDirectory = currentDirectory;
             _starterThread = starterThread;
-            
+
             try
             {
                 if (_starterThread.ThreadState == ThreadState.Unstarted)
@@ -54,7 +54,7 @@ namespace NetCoreCMS.Framework.Core.App
                     {
                         if (_starterThread == null || _starterThread.ThreadState == ThreadState.Stopped)
                         {
-                            StartApp(webHostStarter,args);
+                            StartApp(webHostStarter, args);
                         }
                     }
                     catch (Exception ex)
@@ -85,7 +85,8 @@ namespace NetCoreCMS.Framework.Core.App
             {
                 Mediator?.SendAll(
                     new OnAppActivity(
-                        new AppActivity() {
+                        new AppActivity()
+                        {
                             ActivityType = started,
                             Context = HttpContext,
                             Services = Services,
@@ -102,19 +103,20 @@ namespace NetCoreCMS.Framework.Core.App
         public static async Task StopAppAsync(IWebHost webHost)
         {
             FireEvent(AppActivity.Type.BeforeRestart);
-            new Task(() => {
-                Thread.Sleep(1000);
-                webHost.StopAsync(new TimeSpan(0, 0, 3));
-                _starterThread.Join(3000);
-                _starterThread = null;
-                GC.Collect();
-            }).Start();
+            await Task.Run(async () =>
+                 {
+                     Thread.Sleep(1000);
+                     await webHost.StopAsync(new TimeSpan(0, 0, 3));
+                     _starterThread.Join(3000);
+                     _starterThread = null;
+                     GC.Collect();
+                 });
         }
 
         public static async Task ShutdownAppAsync(IWebHost webHost)
         {
             _isShutdown = true;
-            StopAppAsync(webHost);
+            await StopAppAsync(webHost);
         }
     }
 }

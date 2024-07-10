@@ -2,9 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <UserSecretsId>aspnet-NetCoreCMS.Web-A497A7FB-6A8B-4C0C-A642-25FF5B4E9FEC</UserSecretsId>
-    <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
-  </PropertyGroup>
+    <UserSecretsId>aspnet-NetCoreCMS.Web-A497A7FB-6A8B-4C0C-A642-25FF5B4E9FEC</UserSecretsId> 
+  </PropertyGroup> 
 
   <ItemGroup>
     <Compile Remove="Core\**" />
@@ -33,9 +32,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.10.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.6" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.1" PrivateAssets="All" />
     <PackageReference Include="Serilog.Enrichers.Environment" Version="2.1.2" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="2.0.2" />
     <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.1-dev-00771" />

@@ -22,13 +22,13 @@ namespace NetCoreCMS.Framework.Core.Auth.Handlers
     /// </summary>    
     public class NccAuthRequireHandler : INccAuthorizationHandler
     {
-        private readonly UserManager<NccUser> _userManager;        
-        
-        public NccAuthRequireHandler(UserManager<NccUser> userManager )
+        private readonly UserManager<NccUser> _userManager;
+
+        public NccAuthRequireHandler(UserManager<NccUser> userManager)
         {
-            _userManager = userManager;                        
+            _userManager = userManager;
         }
-        
+
 
         public Dictionary<string, string> GetRequirementValues(string requirementName)
         {
@@ -38,16 +38,16 @@ namespace NetCoreCMS.Framework.Core.Auth.Handlers
                 list.Add(requirementName, "Firmget");
                 list.Add(requirementName, "Mirpur1");
                 list.Add(requirementName, "Mirpur2");
-            }            
+            }
             return list;
         }
 
         public async Task<AuthorizationResult> HandleRequirement(ActionExecutingContext context, NccAuthRequirement requirement, object model)
         {
-            
+
             if (context.HttpContext.User == null)
             {
-                return AuthorizationResult.Failed();
+                return await Task.FromResult(AuthorizationResult.Failed());
             }
 
             //var usersPolicyList = _nccUserAuthPolicyService.LoadByModulePolicy(PolicyHandler.NccAuthRequireHandler, requirement);
@@ -59,12 +59,12 @@ namespace NetCoreCMS.Framework.Core.Auth.Handlers
                 //    context.Succeed(requirement);
                 //}
             }
-            else if(context.HttpContext.User.Identity.IsAuthenticated)
+            else if (context.HttpContext.User.Identity.IsAuthenticated)
             {
-                return AuthorizationResult.Success();
+                return await Task.FromResult(AuthorizationResult.Success());
             }
 
-            return AuthorizationResult.Failed();
+            return await Task.FromResult(AuthorizationResult.Failed());
         }
-    }    
+    }
 }

@@ -111,11 +111,11 @@
         <span>@totalPage</span>*@
         @if (ViewBag.CurrentPage > 0)
         {
-            <div class="pull-left"><a href="/Post/?page=@(ViewBag.CurrentPage-1)">< @_T["Previous"]</a></div>
+            <div class="pull-left"><a href="/Post/?page=@(ViewBag.CurrentPage-1)">&lt; @_T["Previous"]</a></div>
         }
         @if (ViewBag.CurrentPage < totalPage)
         {
-            <div class="pull-right"><a href="/Post/?page=@(ViewBag.CurrentPage+1)">@_T["Next"] ></a></div>
+            <div class="pull-right"><a href="/Post/?page=@(ViewBag.CurrentPage+1)">@_T["Next"] &gt;</a></div>
         }
     </div>
 </div>

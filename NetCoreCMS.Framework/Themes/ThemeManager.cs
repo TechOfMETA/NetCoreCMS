@@ -57,15 +57,15 @@ namespace NetCoreCMS.Framework.Themes
                         theme.Folder = themeDir.Name;
                         theme.ConfigFilePath = configFileLocation;
 
-                        if (Directory.Exists(themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0"))
+                        if (Directory.Exists(themeDir.FullName + "\\Bin\\Debug\\net8.0"))
                         {
-                            theme.ResourceFolder = themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0\\Resources";
-                            theme.AssemblyPath = themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0\\" + theme.ThemeId + ".dll";
+                            theme.ResourceFolder = themeDir.FullName + "\\Bin\\Debug\\net8.0\\Resources";
+                            theme.AssemblyPath = themeDir.FullName + "\\Bin\\Debug\\net8.0\\" + theme.ThemeId + ".dll";
                         }
-                        else if (Directory.Exists(themeDir.FullName + "\\Bin\\Release\\netcoreapp2.0"))
+                        else if (Directory.Exists(themeDir.FullName + "\\Bin\\Release\\net8.0"))
                         {
-                            theme.AssemblyPath = themeDir.FullName + "\\Bin\\Release\\netcoreapp2.0\\" + theme.ThemeId + ".dll";
-                            theme.ResourceFolder = themeDir.FullName + "\\Bin\\Release\\netcoreapp2.0\\Resources";
+                            theme.AssemblyPath = themeDir.FullName + "\\Bin\\Release\\net8.0\\" + theme.ThemeId + ".dll";
+                            theme.ResourceFolder = themeDir.FullName + "\\Bin\\Release\\net8.0\\Resources";
                         }
 
                         if (string.IsNullOrEmpty(theme.AssemblyPath) == false && File.Exists(theme.AssemblyPath))
@@ -302,8 +302,10 @@ namespace NetCoreCMS.Framework.Themes
                         var widgetTypeList = assembly.GetTypes().Where(x => typeof(Widget).IsAssignableFrom(x)).ToList();
                         foreach (var widgetType in widgetTypeList)
                         {
-                            //var widgetInstance = (IWidget)Activator.CreateInstance(widgetType);                            
-                            var widgetInstance = (Widget)serviceProvider.GetService(widgetType);
+                            var widgetInstance = (Widget)Activator.CreateInstance(widgetType);
+                            services.AddSingleton(widgetType, widgetInstance); 
+                            //var widgetTypeService = serviceProvider.GetService(widgetType);
+                            //var widgetInstance = (Widget)widgetTypeService;
                             widgets.Add(widgetInstance);
                             ThemeHelper.ActiveTheme.Widgets.Add(widgetInstance);
                             GlobalContext.Widgets.Add(widgetInstance);
