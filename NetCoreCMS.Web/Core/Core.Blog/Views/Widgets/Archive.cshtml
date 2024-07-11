@@ -18,7 +18,7 @@
         <hr style="margin:0px;" />
     }
     <p>
-        <a href="/Post/?year=@item.Year&month=@item.MonthValue">
+        <a href="@ModuleConstants.PREFIX_FRONT/?year=@item.Year&month=@item.MonthValue">
             @_T[item.Year] - @_T[item.Month]
             @if (Model.ShowPostCount)
             {

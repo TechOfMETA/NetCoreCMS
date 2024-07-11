@@ -457,7 +457,7 @@ namespace Core.Blog.Controllers
             }).ToList();
             ViewBag.PostType = new SelectList(PostType, "Value", "Text", (int)post.PostType);
 
-            ViewBag.DomainName = (Request.IsHttps == true ? "https://" : "http://") + Request.Host + "/Post/";
+            ViewBag.DomainName = (Request.IsHttps == true ? "https://" : "http://") + $"{ Request.Host }{ModuleConstants.PREFIX_FRONT}/";
         }
         
         #endregion

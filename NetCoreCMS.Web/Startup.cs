@@ -9,54 +9,49 @@
  *************************************************************/
 
 using System;
-using Serilog;
-using System.Text;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
-
+using System.Net;
+using System.Text;
 using MediatR;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Localization.Routing;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.Extensions.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
-
-using NetCoreCMS.Framework.Resources;
-using NetCoreCMS.Framework.Themes;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.CodeAnalysis;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core;
-using NetCoreCMS.Framework.Setup;
-using NetCoreCMS.Framework.Utility;
-using NetCoreCMS.Framework.Core.Middleware;
-using NetCoreCMS.Framework.i18n;
+using NetCoreCMS.Framework.Core.App;
 using NetCoreCMS.Framework.Core.Extensions;
 using NetCoreCMS.Framework.Core.Messages;
-using NetCoreCMS.Framework.Core.App;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using NetCoreCMS.Framework.Modules.Widgets;
+using NetCoreCMS.Framework.Core.Middleware;
 using NetCoreCMS.Framework.Core.Models;
-using NetCoreCMS.Framework.Modules;
-using NetCoreCMS.Framework.Core.Services.Auth;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.CodeAnalysis;
-using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Core.Mvc.Cache;
-using System.Net;
 using NetCoreCMS.Framework.Core.Services;
-using System.Collections;
-using NetCoreCMS.Framework.ViewCompiler;
-using Microsoft.CodeAnalysis.Options;
+using NetCoreCMS.Framework.Core.Services.Auth;
 using NetCoreCMS.Framework.Helpers.UrlHelpers;
-using WebMarkupMin.AspNetCore8;
+using NetCoreCMS.Framework.i18n;
+using NetCoreCMS.Framework.Modules;
+using NetCoreCMS.Framework.Modules.Widgets;
+using NetCoreCMS.Framework.Resources;
+using NetCoreCMS.Framework.RouteAnalyzer;
+using NetCoreCMS.Framework.Setup;
+using NetCoreCMS.Framework.Themes;
+using NetCoreCMS.Framework.Utility;
+using Serilog;
 
 namespace NetCoreCMS.Web
 {
@@ -301,6 +296,12 @@ namespace NetCoreCMS.Web
                 //       options.MinificationSettings.RemoveHttpsProtocolFromAttributes = true;
                 //   })
                 //.AddHttpCompression();
+
+
+                if (_hostingEnvironment.IsDevelopment())
+                {
+                    _services.AddRouteAnalyzer();
+                }
 
                 GlobalContext.ServiceProvider = _serviceProvider;
                 GlobalContext.Services = _services;

@@ -7,7 +7,7 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
- 
+
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -62,7 +62,7 @@ namespace Core.Blog.Controllers
         #endregion
 
         #region Admin Panel
-        [AdminMenuItem(Name = "Manage post", Url = "/Post/Manage", IconCls = "fa-th-list", Order = 1, SubActions = new string[] { "ManageAjax", "Delete" })]
+        [AdminMenuItem(Name = "Manage post", Url = $"{ModuleConstants.PREFIX_ADMIN}/Manage", IconCls = "fa-th-list", Order = 1, SubActions = new string[] { "ManageAjax", "Delete" })]
         public ActionResult Manage()
         {
             return View();
@@ -144,7 +144,8 @@ namespace Core.Blog.Controllers
                     temp = "";
                     foreach (var cat in item.Categories)
                     {
-                        if (temp != "") temp += ", ";
+                        if (temp != "")
+                            temp += ", ";
                         temp += cat.Category.Name;
                     }
                     str.Add(temp);
@@ -153,7 +154,8 @@ namespace Core.Blog.Controllers
                     temp = "";
                     foreach (var tag in item.Tags)
                     {
-                        if (temp != "") temp += ", ";
+                        if (temp != "")
+                            temp += ", ";
                         temp += tag.Tag.Name;
                     }
                     str.Add(temp);
@@ -183,7 +185,8 @@ namespace Core.Blog.Controllers
                     }
                     else
                     {
-                        actionLink += " <a href='/Post/" + item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Slug + "'  target='_blank' class='btn btn-outline btn-info btn-xs'><i class='fa fa-eye'></i> " + item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Language + "</a> ";
+                        var Details = item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault();
+                        actionLink += " <a href='" + Url.PostUrl(Details) + "'  target='_blank' class='btn btn-outline btn-info btn-xs'><i class='fa fa-eye'></i> " + item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Language + "</a> ";
                     }
 
                     if (item.PostStatus != NccPost.NccPostStatus.Published)
@@ -211,7 +214,7 @@ namespace Core.Blog.Controllers
             });
         }
 
-        [AdminMenuItem(Name = "New post", Url = "/Post/CreateEdit", IconCls = "fa-pencil-square-o", Order = 2)]
+        [AdminMenuItem(Name = "New post", Url = $"{ModuleConstants.PREFIX_ADMIN}/CreateEdit", IconCls = "fa-pencil-square-o", Order = 2)]
         public ActionResult CreateEdit(long Id = 0)
         {
             NccPost post = new NccPost();
@@ -452,7 +455,7 @@ namespace Core.Blog.Controllers
             SetPostViewData(model);
             return View(model);
         }
-        
+
         public ActionResult PublishPost(long Id = 0)
         {
             if (Id > 0)
@@ -504,7 +507,7 @@ namespace Core.Blog.Controllers
 
         #region Public View
         [AllowAnonymous]
-        [SiteMenuItem(Name = "Blog Posts", Url = "/Post", Order = 1)]
+        [SiteMenuItem(Name = "Blog Posts", Url = $"{ModuleConstants.PREFIX_FRONT}/", Order = 1)]
         public ActionResult Index(string slug = "", int year = 0, int month = 0, int page = 0)
         {
             ViewBag.CurrentLanguage = CurrentLanguage;
@@ -589,8 +592,7 @@ namespace Core.Blog.Controllers
                 Value = ((int)v).ToString()
             }).ToList();
             ViewBag.PostType = new SelectList(PostType, "Value", "Text", (int)post.PostType);
-
-            ViewBag.DomainName = (Request.IsHttps == true ? "https://" : "http://") + Request.Host + "/Post/";
+            ViewBag.DomainName = (Request.IsHttps == true ? "https://" : "http://") + $"{Request.Host}{ModuleConstants.PREFIX_FRONT}/";
         }
         #endregion
     }

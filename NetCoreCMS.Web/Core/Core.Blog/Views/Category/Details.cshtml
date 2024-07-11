@@ -88,7 +88,7 @@
                             {
                                 content = "";
                             }
-                            <p>@Html.Raw(content) ...<a href="/Post/@postDetails.Slug">More</a></p>
+                            <p>@Html.Raw(content) ...<a href="@Url.PostUrl(postDetails)">More</a></p>
                             }
                     </div>
                 </div>

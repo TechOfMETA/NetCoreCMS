@@ -78,7 +78,7 @@
                                 <div class="carousel-caption" role="option">
                                     <h2>@Html.Raw(postDetails.Title)</h2>
                                     <p>@Html.Raw(postDetails.MetaDescription)</p>
-                                    <a href="/Post/@postDetails.Slug" class="btn btn-primary">@_T["Read More"]</a>
+                                    <a href="@Url.PostUrl(postDetails)" class="btn btn-primary">@_T["Read More"]</a>
                                 </div>
                             </div>
                         }
@@ -161,7 +161,7 @@
                                                 <h4 style="height:20px; overflow:hidden;"><strong>@Html.Raw(postDetails.Title)</strong></h4>
                                                 <hr style="margin-top:0px;margin-bottom:5px;" />
                                                 <p style="height:80px; overflow:hidden;">@Html.Raw(postDetails.MetaDescription)</p>
-                                                <a href="/Post/@postDetails.Slug" class="btn btn-primary">@_T["Read More"]</a>
+                                                <a href="@Url.PostUrl(postDetails)" class="btn btn-primary">@_T["Read More"]</a>
                                             </div>
                                         </div>
                                     </div>

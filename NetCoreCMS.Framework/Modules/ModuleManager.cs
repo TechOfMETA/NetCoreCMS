@@ -42,6 +42,7 @@ using Microsoft.Extensions.Logging;
 
 namespace NetCoreCMS.Framework.Modules
 {
+    [Obsolete("ModuleManager tracking")]
     public class ModuleManager
     {
         List<IModule> modules;
@@ -184,7 +185,10 @@ namespace NetCoreCMS.Framework.Modules
             }
         }
 
-        public List<IModule> AddModulesAsApplicationPart(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider, ILogger logger)
+        public List<IModule> AddModulesAsApplicationPart(IMvcBuilder mvcBuilder,
+                                                         IServiceCollection services,
+                                                         IServiceProvider serviceProvider,
+                                                         ILogger logger)
         {
             _logger = logger;
 
@@ -849,8 +853,8 @@ namespace NetCoreCMS.Framework.Modules
 
         public void RegisterModuleShortCodes(IMvcBuilder mvcBuilder, IServiceProvider serviceProvider)
         {
-            var _nccShortCodeProvider = serviceProvider.GetService<NccShortCodeProvider>();
-            GlobalContext.ShortCodes = _nccShortCodeProvider.RegisterShortCodes(GlobalContext.Modules);
+            var nccShortCodeProvider = serviceProvider.GetService<NccShortCodeProvider>();
+            GlobalContext.ShortCodes = nccShortCodeProvider.RegisterShortCodes(GlobalContext.Modules);
         }
 
         public void LoadModuleInfo(IModule module, IModule moduleAssembly)

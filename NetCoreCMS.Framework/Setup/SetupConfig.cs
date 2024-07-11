@@ -35,6 +35,7 @@ namespace NetCoreCMS.Framework.Setup
         public int MaintenanceDownTime { get; set; } = 30;
         public string MaintenanceMessage { get; set; } = "Doing Maintenance. Comming back soon...";
         public string Language { get; set; }
+        public string DbVersion { get; set; }
     }
 
     public class StartupTypeText {

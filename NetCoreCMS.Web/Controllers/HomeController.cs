@@ -9,37 +9,58 @@
  *************************************************************/
 
 using System;
-using System.Net;
-
-using Microsoft.AspNetCore.Mvc;
-using NetCoreCMS.Framework.Utility;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Http;
-
-using NetCoreCMS.Framework.i18n;
-using NetCoreCMS.Framework.Core.App;
-using NetCoreCMS.Framework.Setup;
-using NetCoreCMS.Framework.Core.Mvc.Controllers;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Security.Policy;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Routing.Template;
+using Microsoft.Extensions.Logging;
+using NetCoreCMS.Framework.Core.App;
+using NetCoreCMS.Framework.Core.Mvc.Controllers;
+using NetCoreCMS.Framework.i18n;
+using NetCoreCMS.Framework.Setup;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Web.Controllers
 {
     public class HomeController : NccController
     {
         IHostingEnvironment _env;
+        private readonly IControllerFactory _controllerFactory;
+        private readonly IActionDescriptorCollectionProvider _adcProvider;
+        private readonly IHttpContextFactory _httpContextFactory;
+        private readonly IEnumerable<EndpointDataSource> _endpointSources;
 
-        public HomeController(IHostingEnvironment env, ILoggerFactory factory)
+        public HomeController(IHostingEnvironment env,
+                              ILoggerFactory factory,
+                              IControllerFactory controllerFactory,
+                              IActionDescriptorCollectionProvider adcProvider,
+                              IHttpContextFactory httpContextFactory,
+                              IEnumerable<EndpointDataSource> endpointSources)
         {
             _logger = factory.CreateLogger<HomeController>();
             _env = env;
+            _controllerFactory = controllerFactory;
+            _adcProvider = adcProvider;
+            _httpContextFactory = httpContextFactory;
+            _endpointSources = endpointSources;
+
         }
 
         [AllowAnonymous]
         public IActionResult Index()
         {
+
             if (SetupHelper.IsDbCreateComplete && SetupHelper.IsAdminCreateComplete)
             {
                 if (GlobalContext.SetupConfig == null)
@@ -61,8 +82,67 @@ namespace NetCoreCMS.Web.Controllers
 
                 var langEnabledUrl = NccUrlHelper.AddLanguageToUrl(CurrentLanguage, NccUrlHelper.EncodeUrl(setupConfig.StartupUrl));
 
+                //string newQueryString = "";
+                //string newPath = langEnabledUrl;
+                //if (langEnabledUrl.Contains("?"))
+                //{
+                //    newPath = langEnabledUrl.Split('?')[0];
+                //    newQueryString = langEnabledUrl.Split('?')[1];
+                //}
+                //List<object> parameters = new List<object>();
+                //string url = langEnabledUrl;
+                //var routeEndpoints = _endpointSources.SelectMany(es => es.Endpoints).OfType<RouteEndpoint>().ToList();
+                //foreach (var ep in routeEndpoints)
+                //{
+                //    var routeValues = new RouteValueDictionary();
+                //    var defaultValues = new RouteValueDictionary();
+                //    var tm = new TemplateMatcher(TemplateParser.Parse(ep.RoutePattern.RawText), defaultValues);
+                //    if (tm.TryMatch(newPath, routeValues))
+                //    {
+                //        string area = routeValues["area"]?.ToString();
+                //        string controller = routeValues["controller"]?.ToString();
+                //        string action = routeValues["action"]?.ToString();
+                //        parameters.Add(new {ep.RoutePattern,ep.DisplayName, ep.Order, area, controller, action, routeValues });
+                //    }
+                //}
+                //return Json(parameters);
+
+                //if(setupConfig.StartupUrl.Trim(' ','/') =="CmsHome")
+                //    return View()
+
+                //IRouteCollection router = RouteData.Routers.OfType<IRouteCollection>().First();
+                //HttpContext newHttpContext = _httpContextFactory.Create(HttpContext.Features);
+                //newHttpContext.Request.Path = newPath;
+                //newHttpContext.Request.QueryString = new QueryString(newQueryString);
+                //var routeContext = new RouteContext(newHttpContext);
+                ////router.RouteAsync(routeContext).Wait();
+                //bool exists = routeContext.RouteData != null;
+                //var newRouteData = new RouteData();
+                var newActionDescriptor = new ControllerActionDescriptor();
+                //ActionContext actionContext = new ActionContext(newHttpContext, newRouteData, newActionDescriptor);
+                //if (exists)
+                //{
+                //    var newControllerContext = new ControllerContext(actionContext);
+                //    var newController = (Controller)_controllerFactory.CreateController(newControllerContext);
+
+                var routes = _adcProvider.ActionDescriptors.Items.Where(r => r is ControllerActionDescriptor).Cast<ControllerActionDescriptor>().ToList();
+                //    object[] objects = new object[routes.Count];
+                //    for (int i = 0; i < routes.Count; i++)
+                //    {
+                //        var r = routes[i];
+                //        if (r is ControllerActionDescriptor)
+                //        {
+                //            var cad = (ControllerActionDescriptor)r;
+                //            objects[i] = new { cad.ControllerName, cad.ActionName, Template = cad.AttributeRouteInfo?.Template };
+                //        }
+                //    }
+                //    return Json(objects);
+                //}
+
                 return Redirect(langEnabledUrl);
             }
+
+
             return Redirect("/SetupHome/Index");
         }
 

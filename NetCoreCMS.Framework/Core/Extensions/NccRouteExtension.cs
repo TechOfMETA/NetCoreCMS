@@ -8,12 +8,13 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
+using NetCoreCMS.Framework.RouteAnalyzer;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Utility;
-using System;
 
 namespace NetCoreCMS.Framework.Core.Extensions
 {
@@ -22,8 +23,16 @@ namespace NetCoreCMS.Framework.Core.Extensions
         public static IApplicationBuilder UseNccRoutes(this IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
             app.UseRouting();
+
+
+
             app.UseEndpoints(endpoints =>
             {
+                if (env.IsDevelopment())
+                {
+                    endpoints.MapRouteAnalyzer("/routes");
+                }
+
                 if (SetupHelper.IsAdminCreateComplete && GlobalContext.WebSite.IsMultiLangual)
                 {
                     endpoints.MapControllerRoute(
@@ -166,17 +175,17 @@ namespace NetCoreCMS.Framework.Core.Extensions
                         pattern: "blog/{slug}.html",
                         defaults: new { controller = "Post", action = "Index" });
 
-                     endpoints.MapControllerRoute(
-                        name: "blogCategory",
-                        pattern: "blog/{slug}",
-                        defaults: new { controller = "Category", action = "Index" });
+                    endpoints.MapControllerRoute(
+                       name: "blogCategory",
+                       pattern: "blog/{slug}",
+                       defaults: new { controller = "Category", action = "Index" });
 
                     endpoints.MapControllerRoute(
                         name: "blogPostIndex",
                         pattern: "blog",
                         defaults: new { controller = "Post", action = "Index" });
 
-                   
+
 
                     endpoints.MapControllerRoute(
                         name: "default",
@@ -200,6 +209,8 @@ namespace NetCoreCMS.Framework.Core.Extensions
                      pattern: "{*catchall}",
                      defaults: new { controller = "Home", action = "ResourceNotFound" });
                 }
+
+
 
             });
 

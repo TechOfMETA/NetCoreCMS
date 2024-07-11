@@ -67,6 +67,7 @@ namespace NetCoreCMS.Framework.Setup
                         IsAdminCreateComplete = IsAdminCreateComplete,
                         SelectedDatabase = SelectedDatabase,
                         ConnectionString = ConnectionString,
+                        DbVersion = DbVersion,
                         LoggingLevel = LoggingLevel,
                         Language = Language,
                         StartupUrl = StartupUrl,
@@ -106,6 +107,7 @@ namespace NetCoreCMS.Framework.Setup
                     IsAdminCreateComplete = config.IsAdminCreateComplete;
                     SelectedDatabase = config.SelectedDatabase;
                     ConnectionString = config.ConnectionString;
+                    DbVersion = config.DbVersion;
                     LoggingLevel = config.LoggingLevel;
                     Language = config.Language;
                     StartupType = config.StartupType;
@@ -646,7 +648,7 @@ namespace NetCoreCMS.Framework.Setup
                     break;
                 case SupportedDatabases.MySql:
                     GlobalContext.Services.AddDbContext<NccDbContext>(options =>
-                        options.UseMySql( SetupHelper.ConnectionString,ServerVersion.Parse(SetupHelper.DbVersion), opts => opts.MigrationsAssembly("NetCoreCMS.Framework"))
+                        options.UseMySql(SetupHelper.ConnectionString, ServerVersion.Parse(SetupHelper.DbVersion), opts => opts.MigrationsAssembly("NetCoreCMS.Framework"))
                     );
 
                     break;

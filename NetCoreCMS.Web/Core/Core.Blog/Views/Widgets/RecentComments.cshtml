@@ -37,8 +37,8 @@
         }
         <p>
             <a href="@website" target="_blank">@name</a>
-            <strong> @_T["on"] </strong> 
-            <a href="/Post/@postDetails.Slug">@Html.Raw(postDetails.Title)</a>
+            <strong> @_T["on"] </strong>
+            <a href="@Url.PostUrl(postDetails)">@Html.Raw(postDetails.Title)</a>
         </p>
     }
 }

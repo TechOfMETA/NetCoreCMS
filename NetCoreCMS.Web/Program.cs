@@ -9,19 +9,16 @@
  *************************************************************/
 
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using System.Threading;
-using NetCoreCMS.Framework.Core.App;
-using System.Diagnostics;
-using NetCoreCMS.Framework.Utility;
-using NetCoreCMS.Framework.Setup;
-using System.Text;
-using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Builder;
-using System.Net.WebSockets;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using NetCoreCMS.Framework.Core.App;
 
 namespace NetCoreCMS.Web
 {

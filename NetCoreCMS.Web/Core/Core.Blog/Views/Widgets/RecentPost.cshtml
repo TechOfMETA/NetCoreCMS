@@ -25,7 +25,7 @@
             <hr />
         }
         <p>
-            <a href="/Post/@postDetails.Slug">@Html.Raw(postDetails.Title)</a>
+            <a href="@Url.PostUrl(postDetails)">@Html.Raw(postDetails.Title)</a>
             @if (Model.IsDateShow)
             {
                 <br />
