@@ -9,7 +9,7 @@
   "Version": "0.0.1",
   "NccVersion": "0.4.5",
   "Category": "Default",
-  "IsActive": true,
+  "IsActive": false,
   "MenuLocations": [
     "Top",
     "Navigation",
@@ -74,6 +74,8 @@
     }
   ],
   "Settings": {
+    "version": 1.2000000000000002,
+    "style": "green-skin.css",
     "NccVersion": {
       "Major": 0,
       "Minor": 4,
@@ -81,8 +83,6 @@
       "Revision": -1,
       "MajorRevision": -1,
       "MinorRevision": -1
-    },
-    "style": "green-skin.css",
-    "version": 1.2000000000000002
+    }
   }
 }

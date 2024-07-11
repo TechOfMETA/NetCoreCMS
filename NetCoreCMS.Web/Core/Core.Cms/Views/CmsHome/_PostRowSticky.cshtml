@@ -17,7 +17,7 @@
                 </div>
             }
             <div>
-                <a href="/Post/@postDetails.Slug"><h3 style="margin-top:0px;">@postDetails.Title</h3></a>
+                <a href="@Url.Action("Index","Post",new {slug=postDetails.Slug})"><h3 style="margin-top:0px;">@postDetails.Title</h3></a>
                 @{
                     var content = postDetails.Content;
                     if (content?.Length > 0)

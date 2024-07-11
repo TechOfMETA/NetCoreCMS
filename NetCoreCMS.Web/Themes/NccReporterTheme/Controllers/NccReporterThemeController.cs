@@ -7,16 +7,14 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
- 
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using NetCoreCMS.Framework.Core.Mvc.Attributes;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Themes;
-using System;
-using System.Collections.Generic;
-using NetCoreCMS.Framework.Core.Mvc.Attributes;
 
-namespace NccSeventeen.Controllers
+namespace NccReporterTheme.Controllers
 {
     public class NccReporterThemeController : NccController
     {
@@ -38,10 +36,8 @@ namespace NccSeventeen.Controllers
         public ActionResult Index(string[] key, string[] value)
         {
             foreach (var item in style)
-            {
-                ThemeHelper.UnRegisterResource(NccResource.ResourceType.CssFile, string.Concat("/Themes/NccSeventeen/css/", item.Key));
-            }
-            double version = 1.0;
+                ThemeHelper.UnRegisterResource(NccResource.ResourceType.CssFile, string.Concat("/Themes/NccReporterTheme/css/", item.Key));
+            var version = 1.0;
             try
             {
                 version = (double)ThemeHelper.ActiveTheme.Settings["version"];
@@ -51,7 +47,7 @@ namespace NccSeventeen.Controllers
             catch (Exception ex) { }
             ThemeHelper.ActiveTheme.Settings.Add("version", version);
 
-            for (int i = 0; i < key.Length; i++)
+            for (var i = 0; i < key.Length; i++)
             {
                 ThemeHelper.ActiveTheme.Settings.Remove(key[i]);
                 ThemeHelper.ActiveTheme.Settings.Add(key[i], value[i]);
