@@ -120,7 +120,7 @@ namespace NetCoreCMS.Framework.Core.Extensions
         {
             ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalContext.Modules, GlobalContext.Themes);
 
-            app.UseResponseCompression();
+            //app.UseResponseCompression();
             app.UseResponseCaching(); //Use this attrib for cache [ResponseCache(Duration = 20)]            
             app.UseSession();
             app.UseStaticFiles();

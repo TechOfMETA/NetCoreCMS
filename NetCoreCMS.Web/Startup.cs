@@ -56,6 +56,7 @@ using System.Collections;
 using NetCoreCMS.Framework.ViewCompiler;
 using Microsoft.CodeAnalysis.Options;
 using NetCoreCMS.Framework.Helpers.UrlHelpers;
+using WebMarkupMin.AspNetCore8;
 
 namespace NetCoreCMS.Web
 {
@@ -156,7 +157,7 @@ namespace NetCoreCMS.Web
                             "slug", }
                     });
 
-                    config.EnableEndpointRouting = false;
+                    //config.EnableEndpointRouting = false;
                 });
                 //_mvcBuilder.SetCompatibilityVersion(CompatibilityVersion.Version_2_0)
                 //_mvcBuilder.AddRazorRuntimeCompilation(o =>
@@ -287,6 +288,20 @@ namespace NetCoreCMS.Web
 
                 _services.AddApplicationInsightsTelemetry();
 
+                //_services.AddWebMarkupMin(options =>
+                //{
+                //    options.AllowMinificationInDevelopmentEnvironment = true;
+                //    options.AllowCompressionInDevelopmentEnvironment = true;
+                //})
+                //    .AddHtmlMinification(
+                //   options =>
+                //   {
+                //       options.MinificationSettings.RemoveRedundantAttributes = true;
+                //       options.MinificationSettings.RemoveHttpProtocolFromAttributes = true;
+                //       options.MinificationSettings.RemoveHttpsProtocolFromAttributes = true;
+                //   })
+                //.AddHttpCompression();
+
                 GlobalContext.ServiceProvider = _serviceProvider;
                 GlobalContext.Services = _services;
                 NetCoreCmsHost.Mediator = _serviceProvider.GetService<IMediator>();
@@ -322,6 +337,7 @@ namespace NetCoreCMS.Web
                 NetCoreCmsHost.Logger = loggerFactory.CreateLogger<Startup>();
                 NetCoreCmsHost.HttpContext = new HttpContextAccessor().HttpContext;
 
+                //app.UseWebMarkupMin();
                 app.UseRequestTracker();
                 app.UseNetCoreCMS(env, _serviceProvider, loggerFactory);
                 app.UseNccRoutes(env, _serviceProvider, loggerFactory);

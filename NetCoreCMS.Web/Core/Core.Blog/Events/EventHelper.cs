@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Events.Post;

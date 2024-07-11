@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35004.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{BDDA4695-6AA7-4A2D-A82E-33C64576477D}"
 EndProject
@@ -81,6 +81,28 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreCMS.EasyNews", "NetCoreCMS.Web\Modules\NetCoreCMS.EasyNews\NetCoreCMS.EasyNews.csproj", "{1D8382DC-AE7F-4C9B-B4C9-86F363048B69}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DefaultTheme", "NetCoreCMS.Web\Themes\DefaultTheme\DefaultTheme.csproj", "{68481BFF-35ED-4C8A-B5B2-05E2133D5A77}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "reporter-bootstrap-main", "Designs\reporter-bootstrap-main\", "{44140D63-B622-4B91-876D-DE3348A9E23C}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_64189"
+		Debug.AspNetCompiler.PhysicalPath = "Designs\reporter-bootstrap-main\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_64189\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_64189"
+		Release.AspNetCompiler.PhysicalPath = "Designs\reporter-bootstrap-main\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_64189\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "64189"
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Designs", "Designs", "{F9DC9016-D9B2-477D-93DA-2341B8C303E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -176,6 +198,10 @@ Global
 		{68481BFF-35ED-4C8A-B5B2-05E2133D5A77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68481BFF-35ED-4C8A-B5B2-05E2133D5A77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68481BFF-35ED-4C8A-B5B2-05E2133D5A77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44140D63-B622-4B91-876D-DE3348A9E23C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44140D63-B622-4B91-876D-DE3348A9E23C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44140D63-B622-4B91-876D-DE3348A9E23C}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{44140D63-B622-4B91-876D-DE3348A9E23C}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -208,6 +234,7 @@ Global
 		{B0EEF0A9-6C3B-43F9-B4B8-E490F54A264D} = {6F492190-BD43-43F1-8512-26701469FB7E}
 		{1D8382DC-AE7F-4C9B-B4C9-86F363048B69} = {BDDA4695-6AA7-4A2D-A82E-33C64576477D}
 		{68481BFF-35ED-4C8A-B5B2-05E2133D5A77} = {0C40B021-EF98-444C-9CCB-38B35ED10100}
+		{44140D63-B622-4B91-876D-DE3348A9E23C} = {F9DC9016-D9B2-477D-93DA-2341B8C303E2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8DF1B167-7690-4003-AA5C-3EA5712DEC16}

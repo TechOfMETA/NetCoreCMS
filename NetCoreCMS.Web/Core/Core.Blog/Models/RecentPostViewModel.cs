@@ -1,7 +1,5 @@
-﻿using NetCoreCMS.Framework.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using NetCoreCMS.Framework.Core.Models;
 
 namespace Core.Blog.Models
 {
